@@ -1,0 +1,23 @@
+[package]
+name = "sgp4"
+version = "0.1.0"
+edition = "2021"
+description = "sgp4 for wasm, published on WAPM"
+authors = ["Wasmer Engineering Team <engineering@wasmer.io>"]
+repository = "https://github.com/wasmerio/sgp4"
+homepage = "https://wasmer.io/"
+license = "MIT OR Apache-2.0"
+rust-version = "1.65.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package.metadata.wapm]
+namespace = "wasmer"
+abi = "none"
+bindings = { wai-version = "0.2.0", exports = "sgp4.wai" }
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wai-bindgen-rust = "0.2.2"
