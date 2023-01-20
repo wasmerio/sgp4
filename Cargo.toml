@@ -22,3 +22,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 wai-bindgen-rust = "0.2.2"
 original = { version = "0.8.2", package = "sgp4" }
+
+[patch.crates-io]
+original = { path = "../../Rust/sgp4", package = "sgp4" }
+

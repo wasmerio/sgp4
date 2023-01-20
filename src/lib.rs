@@ -41,8 +41,7 @@ impl sgp4::Sgp4 for Sgp4 {
     }
 
     fn parse2les(tles: String) -> Result<Vec<ElementsS>, SgpError> {
-        // original::parse_2les(&tles)
-        todo!()
+        let converted_vec: Vec<ElementsS> = original::parse_2les(&tles);
     }
 
     fn parse3les(tles: String) -> Result<Vec<ElementsS>, SgpError> {
@@ -136,6 +135,38 @@ impl From<original::Classification> for Classification {
     }
 }
 
+impl From<original::ErrorTleLine> for ErrorTleLine {
+    fn from(e: original::ErrorTleLine) -> Self {
+        match e {
+            original::ErrorTleLine::Line1 => ErrorTleLine::Line1,
+            original::ErrorTleLine::Line2 => ErrorTleLine::Line2,
+            original::ErrorTleLine::Both => ErrorTleLine::Both,
+        }
+    }
+}
+
+impl From<original::ErrorTleWhat> for ErrorTleWhat {
+    fn from(e: original::ErrorTleWhat) -> Self {
+        match e {
+            original::ErrorTleWhat::BadChecksum => ErrorTleWhat::BadChecksum,
+            original::ErrorTleWhat::BadLength => ErrorTleWhat::BadLength,
+            original::ErrorTleWhat::BadFirstCharacter => ErrorTleWhat::BadFirstCharacter,
+            original::ErrorTleWhat::ExpectedFloat => ErrorTleWhat::ExpectedFloat,
+            original::ErrorTleWhat::ExpectedFloatWithAssumedDecimalPoint => {
+                ErrorTleWhat::ExpectedFloatWithAssumedDecimalPoint
+            }
+            original::ErrorTleWhat::ExpectedInteger => ErrorTleWhat::ExpectedInteger,
+            original::ErrorTleWhat::ExpectedSpace => ErrorTleWhat::ExpectedSpace,
+            original::ErrorTleWhat::ExpectedString => ErrorTleWhat::ExpectedString,
+            original::ErrorTleWhat::FloatWithAssumedDecimalPointTooLong => {
+                ErrorTleWhat::FloatWithAssumedDecimalPointTooLong
+            }
+            original::ErrorTleWhat::NoradIdMismatch => ErrorTleWhat::NoradIdMismatch,
+            original::ErrorTleWhat::UnknownClassification => ErrorTleWhat::UnknownClassification,
+        }
+    }
+}
+
 impl From<original::Error> for SgpError {
     fn from(e: original::Error) -> Self {
         match e {
@@ -162,8 +193,8 @@ impl From<original::Error> for SgpError {
                 start,
                 end,
             } => SgpError::Tle(Tle {
-                what: todo!(),
-                line: todo!(),
+                what: what.into(),
+                line: line.into(),
                 start: start.try_into().unwrap(),
                 end: end.try_into().unwrap(),
             }),
