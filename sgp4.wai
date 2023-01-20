@@ -127,8 +127,10 @@ record prediction {
 }
 
 
-
+/// Constant WGS72
 wgs72: func() -> geopotential
+
+/// Constant WGS84
 wgs84: func() -> geopotential
 
 afspc-epoch-to-sidereal-time: func(epoch: float64) -> float64
@@ -147,12 +149,14 @@ record resonance-state {
 resonance-state-t: func(rs: resonance-state) -> float64
 
 
-
+enum epoch-to-sidereal-time-algorithm {
+  afspc,
+  iau,
+}
 
 /// implmenetation for Constants
 resource constants {
-    static new-with-afspc-epoch-to-sidereal-time: func(geopotential: geopotential, epoch: float64, drag-item: float64, orbit0: orbit) -> expected<constants, error>
-    static new-with-iau-epoch-to-sidereal-time: func(geopotential: geopotential, epoch: float64, drag-item: float64, orbit0: orbit) -> expected<constants, error>
+    static new: func(geopotential: geopotential, epoch-to-sidereal-time: epoch-to-sidereal-time-algorithm, epoch: float64, drag-item: float64, orbit0: orbit) -> expected<constants, error>
     static from-elements: func(elements: elements-s) -> expected<constants, error>
     static from-elements-afspc-compatibility-mode: func(elements: elements-s) -> expected<constants, error>
     initial-state: func() -> option<resonance-state>
@@ -160,5 +164,3 @@ resource constants {
     propagate: func(t: float64) -> expected<prediction, error>
     propagate-afspc-compatibility-mode: func(t: float64) -> expected<prediction, error>
 }
-
-
