@@ -2,7 +2,7 @@
 
 
 /// underlying structs and variants for errors
-variant error-tle-what-var {
+variant error-tle-what {
     bad-checksum,
     bad-length,
     bad-first-character,
@@ -16,33 +16,33 @@ variant error-tle-what-var {
     unknown-classification,
 }
 
-variant error-tle-line-var {
+variant error-tle-line {
     line1,
     line2,
     both,
 }
 
-record out-of-range-epoch-eccentricity-rec {
+record out-of-range-epoch-eccentricity {
     eccentricity: float64,
 }
 
-record out-of-range-eccentricity-rec {
-    eccentricity: float64,
-    t: float64,
-}
-
-record out-of-range-perturbed-eccentricity-rec {
+record out-of-range-eccentricity {
     eccentricity: float64,
     t: float64,
 }
 
-record negative-semi-latus-rectum-rec {
+record out-of-range-perturbed-eccentricity {
+    eccentricity: float64,
     t: float64,
 }
 
-record tle-rec {
-    what: error-tle-what-var,
-    line: error-tle-line-var,
+record negative-semi-latus-rectum {
+    t: float64,
+}
+
+record tle {
+    what: error-tle-what,
+    line: error-tle-line,
     start: u32,
     end: u32,
 }
@@ -50,13 +50,13 @@ record tle-rec {
 
 /// main error variant
 variant error {
-    out-of-range-epoch-eccentricity(out-of-range-epoch-eccentricity-rec),
-    out-of-range-eccentricity(out-of-range-eccentricity-rec),
-    out-of-range-perturbed-eccentricity(out-of-range-perturbed-eccentricity-rec),
+    out-of-range-epoch-eccentricity(out-of-range-epoch-eccentricity),
+    out-of-range-eccentricity(out-of-range-eccentricity),
+    out-of-range-perturbed-eccentricity(out-of-range-perturbed-eccentricity),
     negative-brouwer-mean-motion,
     negative-kozai-mean-motion,
-    negative-semi-latus-rectum(negative-semi-latus-rectum-rec),
-    tle(tle-rec),
+    negative-semi-latus-rectum(negative-semi-latus-rectum),
+    tle(tle),
 }
 
 /// Classification variant
