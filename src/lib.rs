@@ -1,7 +1,7 @@
 use crate::sgp4::{
-    Classification, ElementsS, Error as SgpError, ErrorTleLine, ErrorTleWhat, Geopotential,
-    NegativeSemiLatusRectum, Orbit, OutOfRangeEccentricity, OutOfRangeEpochEccentricity,
-    OutOfRangePerturbedEccentricity, Prediction, ResonanceState, Tle,
+    Classification, ElementsS, EpochToSiderealTimeAlgorithm, Error as SgpError, ErrorTleLine,
+    ErrorTleWhat, Geopotential, NegativeSemiLatusRectum, Orbit, OutOfRangeEccentricity,
+    OutOfRangeEpochEccentricity, OutOfRangePerturbedEccentricity, Prediction, ResonanceState, Tle,
 };
 
 use original::{self};
@@ -41,7 +41,8 @@ impl sgp4::Sgp4 for Sgp4 {
     }
 
     fn parse2les(tles: String) -> Result<Vec<ElementsS>, SgpError> {
-        let converted_vec: Vec<ElementsS> = original::parse_2les(&tles);
+        todo!()
+        // let converted_vec: Vec<ElementsS> = original::parse_2les(&tles);
     }
 
     fn parse3les(tles: String) -> Result<Vec<ElementsS>, SgpError> {
@@ -49,30 +50,44 @@ impl sgp4::Sgp4 for Sgp4 {
     }
 
     fn resonance_state_t(rs: ResonanceState) -> f64 {
-        todo!()
+        rs.t
     }
 }
 
-struct Constants;
+struct Constants(original::Constants);
 
 impl sgp4::Constants for Constants {
     fn new(
         geopotential: Geopotential,
-        epoch_to_sidereal_time: sgp4::EpochToSiderealTimeAlgorithm,
+        epoch_to_sidereal_time: EpochToSiderealTimeAlgorithm,
         epoch: f64,
         drag_item: f64,
         orbit0: Orbit,
     ) -> Result<Handle<Constants>, SgpError> {
-        todo!()
+        match epoch_to_sidereal_time {
+            EpochToSiderealTimeAlgorithm::Afspc => match original::Constants::new(
+                geopotential.into(),
+                original::afspc_epoch_to_sidereal_time,
+                epoch,
+                drag_item,
+                orbit0.into(),
+            ) {
+                Ok(res) => todo!(),
+                Err(_) => todo!(),
+            },
+            EpochToSiderealTimeAlgorithm::Iau => todo!(),
+        }
     }
 
-    fn from_elements(elements: ElementsS) -> Result<Handle<Constants>, SgpError> {
+    fn from_elements(
+        elements: ElementsS,
+    ) -> Result<wai_bindgen_rust::Handle<crate::Constants>, SgpError> {
         todo!()
     }
 
     fn from_elements_afspc_compatibility_mode(
         elements: ElementsS,
-    ) -> Result<Handle<Constants>, SgpError> {
+    ) -> Result<wai_bindgen_rust::Handle<crate::Constants>, SgpError> {
         todo!()
     }
 
@@ -98,7 +113,13 @@ impl sgp4::Constants for Constants {
     }
 }
 
-struct Elements(ElementsS);
+struct Elements(original::Elements);
+
+impl Elements {
+    fn new(state: original::Elements) -> Self {
+        Elements(state)
+    }
+}
 
 impl sgp4::Elements for Elements {
     fn from_tle(
@@ -106,15 +127,60 @@ impl sgp4::Elements for Elements {
         line1: String,
         line2: String,
     ) -> Result<Handle<Elements>, SgpError> {
-        todo!()
+        match original::Elements::from_tle(object_name, line1.as_bytes(), line2.as_bytes()) {
+            Ok(elements) => Ok(Handle::new(Elements::new(elements))),
+            Err(e) => Err(e.into()),
+        }
     }
 
     fn epoch(&self) -> f64 {
-        todo!()
+        self.0.epoch()
     }
 
     fn epoch_afspc_compatibility_mode(&self) -> f64 {
-        todo!()
+        self.0.epoch_afspc_compatibility_mode()
+    }
+}
+
+impl From<original::Orbit> for Orbit {
+    fn from(o: original::Orbit) -> Self {
+        let original::Orbit {
+            inclination,
+            right_ascension,
+            eccentricity,
+            argument_of_perigee,
+            mean_anomaly,
+            mean_motion,
+        } = o;
+        Orbit {
+            inclination,
+            right_ascension,
+            eccentricity,
+            argument_of_perigee,
+            mean_anomaly,
+            mean_motion,
+        }
+    }
+}
+
+impl Into<original::Orbit> for Orbit {
+    fn into(self) -> original::Orbit {
+        let Orbit {
+            inclination,
+            right_ascension,
+            eccentricity,
+            argument_of_perigee,
+            mean_anomaly,
+            mean_motion,
+        } = self;
+        original::Orbit {
+            inclination,
+            right_ascension,
+            eccentricity,
+            argument_of_perigee,
+            mean_anomaly,
+            mean_motion,
+        }
     }
 }
 
@@ -122,6 +188,12 @@ impl From<original::Geopotential> for Geopotential {
     fn from(original_geopotential: original::Geopotential) -> Self {
         let original::Geopotential { ae, ke, j2, j3, j4 } = original_geopotential;
         Geopotential { ae, ke, j2, j3, j4 }
+    }
+}
+impl Into<original::Geopotential> for Geopotential {
+    fn into(self) -> original::Geopotential {
+        let Geopotential { ae, ke, j2, j3, j4 } = self;
+        original::Geopotential { ae, ke, j2, j3, j4 }
     }
 }
 
