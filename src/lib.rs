@@ -1,7 +1,7 @@
 use crate::sgp4::{
-    Classification, ElementsS, EpochToSiderealTimeAlgorithm, Error as SgpError, ErrorTleLine,
+    Classification, ElementS, EpochToSiderealTimeAlgorithm, Error as SgpError, ErrorTleLine,
     ErrorTleWhat, Geopotential, NegativeSemiLatusRectum, Orbit, OutOfRangeEccentricity,
-    OutOfRangeEpochEccentricity, OutOfRangePerturbedEccentricity, Prediction, ResonanceState, Tle,
+    OutOfRangeEpochEccentricity, OutOfRangePerturbedEccentricity, Prediction, Tle,
 };
 
 use original::{self};
@@ -21,7 +21,18 @@ impl sgp4::Sgp4 for Sgp4 {
         mean_anomaly: f64,
         kozai_mean_motion: f64,
     ) -> Result<Orbit, SgpError> {
-        todo!()
+        match original::Orbit::from_kozai_elements(
+            &geopotential.into(),
+            inclination,
+            right_ascension,
+            eccentricity,
+            argument_of_perigee,
+            mean_anomaly,
+            kozai_mean_motion,
+        ) {
+            Ok(orbit) => Ok(orbit.into()),
+            Err(err) => Err(err.into()),
+        }
     }
 
     fn wgs72() -> Geopotential {
@@ -40,17 +51,26 @@ impl sgp4::Sgp4 for Sgp4 {
         original::iau_epoch_to_sidereal_time(epoch)
     }
 
-    fn parse2les(tles: String) -> Result<Vec<ElementsS>, SgpError> {
-        todo!()
-        // let converted_vec: Vec<ElementsS> = original::parse_2les(&tles);
+    fn parse2les(tles: String) -> Result<Vec<ElementS>, SgpError> {
+        match original::parse_2les(&tles) {
+            Ok(elements) => Ok(elements.into_iter().map(|e| e.into()).collect()),
+            Err(err) => Err(err.into()),
+        }
     }
 
-    fn parse3les(tles: String) -> Result<Vec<ElementsS>, SgpError> {
-        todo!()
+    fn parse3les(tles: String) -> Result<Vec<ElementS>, SgpError> {
+        match original::parse_3les(&tles) {
+            Ok(elements) => Ok(elements.into_iter().map(|e| e.into()).collect()),
+            Err(err) => Err(err.into()),
+        }
     }
+}
 
-    fn resonance_state_t(rs: ResonanceState) -> f64 {
-        rs.t
+struct ResonanceState(original::ResonanceState);
+
+impl sgp4::ResonanceState for ResonanceState {
+    fn t(&self) -> f64 {
+        self.0.t()
     }
 }
 
@@ -79,36 +99,33 @@ impl sgp4::Constants for Constants {
         }
     }
 
-    fn from_elements(
-        elements: ElementsS,
-    ) -> Result<wai_bindgen_rust::Handle<crate::Constants>, SgpError> {
+    fn from_elements(elements: ElementS) -> Result<Handle<Constants>, SgpError> {
         todo!()
     }
 
     fn from_elements_afspc_compatibility_mode(
-        elements: ElementsS,
-    ) -> Result<wai_bindgen_rust::Handle<crate::Constants>, SgpError> {
+        elements: ElementS,
+    ) -> Result<Handle<Constants>, SgpError> {
+        todo!()
+    }
+    fn propagate(&self, t: f64) -> Result<Prediction, SgpError> {
         todo!()
     }
 
-    fn initial_state(&self) -> Option<ResonanceState> {
+    fn propagate_afspc_compatibility_mode(&self, t: f64) -> Result<Prediction, SgpError> {
+        todo!()
+    }
+
+    fn initial_state(&self) -> Option<wai_bindgen_rust::Handle<crate::ResonanceState>> {
         todo!()
     }
 
     fn propagate_from_state(
         &self,
         t: f64,
-        state: Option<ResonanceState>,
+        state: Option<wai_bindgen_rust::Handle<crate::ResonanceState>>,
         afspc_compatibility_mode: bool,
     ) -> Result<Prediction, SgpError> {
-        todo!()
-    }
-
-    fn propagate(&self, t: f64) -> Result<Prediction, SgpError> {
-        todo!()
-    }
-
-    fn propagate_afspc_compatibility_mode(&self, t: f64) -> Result<Prediction, SgpError> {
         todo!()
     }
 }
@@ -274,7 +291,7 @@ impl From<original::Error> for SgpError {
     }
 }
 
-impl From<original::Elements> for ElementsS {
+impl From<original::Elements> for ElementS {
     fn from(elements: original::Elements) -> Self {
         let original::Elements {
             object_name,
@@ -295,7 +312,7 @@ impl From<original::Elements> for ElementsS {
             revolution_number,
             ephemeris_type,
         } = elements;
-        ElementsS {
+        ElementS {
             object_name,
             international_designator,
             norad_id,
