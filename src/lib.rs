@@ -1,12 +1,16 @@
+use std::{str::FromStr, sync::Mutex};
+
 use crate::sgp4::{
     Classification, ElementS, EpochToSiderealTimeAlgorithm, Error as SgpError, ErrorTleLine,
     ErrorTleWhat, Geopotential, NegativeSemiLatusRectum, Orbit, OutOfRangeEccentricity,
     OutOfRangeEpochEccentricity, OutOfRangePerturbedEccentricity, Prediction, Tle,
 };
 
+use chrono::NaiveDateTime;
 use original::{self};
 
 use wai_bindgen_rust::Handle;
+
 wai_bindgen_rust::export!("sgp4.wai");
 
 struct Sgp4;
@@ -66,15 +70,26 @@ impl sgp4::Sgp4 for Sgp4 {
     }
 }
 
-struct ResonanceState(original::ResonanceState);
+struct ResonanceState(Mutex<original::ResonanceState>);
+impl ResonanceState {
+    fn new(state: original::ResonanceState) -> Self {
+        ResonanceState(Mutex::new(state))
+    }
+}
 
 impl sgp4::ResonanceState for ResonanceState {
     fn t(&self) -> f64 {
-        self.0.t()
+        self.0.lock().expect("The mutex was poisioned").t()
     }
 }
 
 struct Constants(original::Constants);
+
+impl Constants {
+    fn new_wrap(state: original::Constants) -> Self {
+        Constants(state)
+    }
+}
 
 impl sgp4::Constants for Constants {
     fn new(
@@ -84,49 +99,78 @@ impl sgp4::Constants for Constants {
         drag_item: f64,
         orbit0: Orbit,
     ) -> Result<Handle<Constants>, SgpError> {
-        match epoch_to_sidereal_time {
-            EpochToSiderealTimeAlgorithm::Afspc => match original::Constants::new(
-                geopotential.into(),
-                original::afspc_epoch_to_sidereal_time,
-                epoch,
-                drag_item,
-                orbit0.into(),
-            ) {
-                Ok(res) => todo!(),
-                Err(_) => todo!(),
-            },
-            EpochToSiderealTimeAlgorithm::Iau => todo!(),
+        let epoch_to_sidereal_time_fn = match epoch_to_sidereal_time {
+            EpochToSiderealTimeAlgorithm::Afspc => original::afspc_epoch_to_sidereal_time,
+            EpochToSiderealTimeAlgorithm::Iau => original::iau_epoch_to_sidereal_time,
+        };
+
+        match original::Constants::new(
+            geopotential.into(),
+            epoch_to_sidereal_time_fn,
+            epoch,
+            drag_item,
+            orbit0.into(),
+        ) {
+            Ok(state) => Ok(Handle::new(Constants::new_wrap(state))),
+            Err(err) => Err(err.into()),
         }
     }
 
     fn from_elements(elements: ElementS) -> Result<Handle<Constants>, SgpError> {
-        todo!()
+        match original::Constants::from_elements(&elements.into()) {
+            Ok(state) => Ok(Handle::new(Constants::new_wrap(state))),
+            Err(err) => Err(err.into()),
+        }
     }
 
     fn from_elements_afspc_compatibility_mode(
         elements: ElementS,
     ) -> Result<Handle<Constants>, SgpError> {
-        todo!()
+        match original::Constants::from_elements_afspc_compatibility_mode(&elements.into()) {
+            Ok(state) => Ok(Handle::new(Constants::new_wrap(state))),
+            Err(err) => Err(err.into()),
+        }
     }
     fn propagate(&self, t: f64) -> Result<Prediction, SgpError> {
-        todo!()
+        match self.0.propagate(t) {
+            Ok(prediction) => Ok(prediction.into()),
+            Err(err) => Err(err.into()),
+        }
     }
 
     fn propagate_afspc_compatibility_mode(&self, t: f64) -> Result<Prediction, SgpError> {
-        todo!()
+        match self.0.propagate_afspc_compatibility_mode(t) {
+            Ok(prediction) => Ok(prediction.into()),
+            Err(err) => Err(err.into()),
+        }
     }
 
-    fn initial_state(&self) -> Option<wai_bindgen_rust::Handle<crate::ResonanceState>> {
-        todo!()
+    fn initial_state(&self) -> Option<Handle<ResonanceState>> {
+        match self.0.initial_state() {
+            Some(rs) => Some(Handle::new(ResonanceState::new(rs))),
+            None => None,
+        }
     }
 
     fn propagate_from_state(
         &self,
         t: f64,
-        state: Option<wai_bindgen_rust::Handle<crate::ResonanceState>>,
+        state: Option<Handle<ResonanceState>>,
         afspc_compatibility_mode: bool,
     ) -> Result<Prediction, SgpError> {
-        todo!()
+        let mut rs = *state
+            .expect("Unable to get resonance state")
+            .0
+            .lock()
+            .expect("err");
+
+        match self
+            .0
+            .propagate_from_state(t, Some(&mut rs), afspc_compatibility_mode)
+        {
+            Ok(prediction) => Ok(prediction.into()),
+            Err(err) => Err(err.into()),
+        }
     }
 }
 
@@ -156,6 +200,26 @@ impl sgp4::Elements for Elements {
 
     fn epoch_afspc_compatibility_mode(&self) -> f64 {
         self.0.epoch_afspc_compatibility_mode()
+    }
+}
+
+impl From<original::Prediction> for Prediction {
+    fn from(prediction: original::Prediction) -> Self {
+        let original::Prediction { position, velocity } = prediction;
+        Prediction {
+            position: (position[0], position[1], position[2]),
+            velocity: (velocity[0], velocity[1], velocity[2]),
+        }
+    }
+}
+
+impl Into<original::Prediction> for Prediction {
+    fn into(self) -> original::Prediction {
+        let Prediction { position, velocity } = self;
+        original::Prediction {
+            position: [position.0, position.1, position.2],
+            velocity: [velocity.0, velocity.1, velocity.2],
+        }
     }
 }
 
@@ -220,6 +284,16 @@ impl From<original::Classification> for Classification {
             original::Classification::Unclassified => Classification::Unclassified,
             original::Classification::Classified => Classification::Classified,
             original::Classification::Secret => Classification::Secret,
+        }
+    }
+}
+
+impl Into<original::Classification> for Classification {
+    fn into(self) -> original::Classification {
+        match self {
+            Classification::Unclassified => original::Classification::Unclassified,
+            Classification::Classified => original::Classification::Classified,
+            Classification::Secret => original::Classification::Secret,
         }
     }
 }
@@ -318,6 +392,49 @@ impl From<original::Elements> for ElementS {
             norad_id,
             classification: classification.into(),
             datetime: datetime.to_string(),
+            mean_motion_dot,
+            mean_motion_ddot,
+            drag_term,
+            element_set_number,
+            inclination,
+            right_ascension,
+            eccentricity,
+            argument_of_perigee,
+            mean_anomaly,
+            mean_motion,
+            revolution_number,
+            ephemeris_type,
+        }
+    }
+}
+
+impl Into<original::Elements> for ElementS {
+    fn into(self) -> original::Elements {
+        let ElementS {
+            object_name,
+            international_designator,
+            norad_id,
+            classification,
+            datetime,
+            mean_motion_dot,
+            mean_motion_ddot,
+            drag_term,
+            element_set_number,
+            inclination,
+            right_ascension,
+            eccentricity,
+            argument_of_perigee,
+            mean_anomaly,
+            mean_motion,
+            revolution_number,
+            ephemeris_type,
+        } = self;
+        original::Elements {
+            object_name,
+            international_designator,
+            norad_id,
+            classification: classification.into(),
+            datetime: NaiveDateTime::from_str(&datetime).expect("Failed to parse NaiveDateTime"),
             mean_motion_dot,
             mean_motion_ddot,
             drag_term,
