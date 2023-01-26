@@ -36,6 +36,11 @@ record out-of-range-perturbed-eccentricity {
     t: float64,
 }
 
+record unix-timestamp {
+    secs: s64,
+    nanos: u32
+}
+
 record negative-semi-latus-rectum {
     t: float64,
 }

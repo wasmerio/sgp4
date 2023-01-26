@@ -25,7 +25,7 @@ impl sgp4::Sgp4 for Sgp4 {
         mean_anomaly: f64,
         kozai_mean_motion: f64,
     ) -> Result<Orbit, SgpError> {
-        match original::Orbit::from_kozai_elements(
+        Ok(original::Orbit::from_kozai_elements(
             &geopotential.into(),
             inclination,
             right_ascension,
@@ -33,10 +33,8 @@ impl sgp4::Sgp4 for Sgp4 {
             argument_of_perigee,
             mean_anomaly,
             kozai_mean_motion,
-        ) {
-            Ok(orbit) => Ok(orbit.into()),
-            Err(err) => Err(err.into()),
-        }
+        )?
+        .into())
     }
 
     fn wgs72() -> Geopotential {
@@ -56,17 +54,17 @@ impl sgp4::Sgp4 for Sgp4 {
     }
 
     fn parse2les(tles: String) -> Result<Vec<ElementS>, SgpError> {
-        match original::parse_2les(&tles) {
-            Ok(elements) => Ok(elements.into_iter().map(|e| e.into()).collect()),
-            Err(err) => Err(err.into()),
-        }
+        Ok(original::parse_2les(&tles)?
+            .into_iter()
+            .map(|e| e.into())
+            .collect())
     }
 
     fn parse3les(tles: String) -> Result<Vec<ElementS>, SgpError> {
-        match original::parse_3les(&tles) {
-            Ok(elements) => Ok(elements.into_iter().map(|e| e.into()).collect()),
-            Err(err) => Err(err.into()),
-        }
+        Ok(original::parse_3les(&tles)?
+            .into_iter()
+            .map(|e| e.into())
+            .collect())
     }
 }
 
@@ -104,73 +102,57 @@ impl sgp4::Constants for Constants {
             EpochToSiderealTimeAlgorithm::Iau => original::iau_epoch_to_sidereal_time,
         };
 
-        match original::Constants::new(
+        let state = original::Constants::new(
             geopotential.into(),
             epoch_to_sidereal_time_fn,
             epoch,
             drag_item,
             orbit0.into(),
-        ) {
-            Ok(state) => Ok(Handle::new(Constants::new_wrap(state))),
-            Err(err) => Err(err.into()),
-        }
+        )?;
+
+        Ok(Handle::new(Constants::new_wrap(state)))
     }
 
     fn from_elements(elements: ElementS) -> Result<Handle<Constants>, SgpError> {
-        match original::Constants::from_elements(&elements.into()) {
-            Ok(state) => Ok(Handle::new(Constants::new_wrap(state))),
-            Err(err) => Err(err.into()),
-        }
+        let state = original::Constants::from_elements(&elements.into())?;
+        Ok(Handle::new(Constants::new_wrap(state)))
     }
 
     fn from_elements_afspc_compatibility_mode(
         elements: ElementS,
     ) -> Result<Handle<Constants>, SgpError> {
-        match original::Constants::from_elements_afspc_compatibility_mode(&elements.into()) {
-            Ok(state) => Ok(Handle::new(Constants::new_wrap(state))),
-            Err(err) => Err(err.into()),
-        }
-    }
-    fn propagate(&self, t: f64) -> Result<Prediction, SgpError> {
-        match self.0.propagate(t) {
-            Ok(prediction) => Ok(prediction.into()),
-            Err(err) => Err(err.into()),
-        }
-    }
+        let state = original::Constants::from_elements_afspc_compatibility_mode(&elements.into())?;
 
-    fn propagate_afspc_compatibility_mode(&self, t: f64) -> Result<Prediction, SgpError> {
-        match self.0.propagate_afspc_compatibility_mode(t) {
-            Ok(prediction) => Ok(prediction.into()),
-            Err(err) => Err(err.into()),
-        }
+        Ok(Handle::new(Constants::new_wrap(state)))
     }
-
     fn initial_state(&self) -> Option<Handle<ResonanceState>> {
-        match self.0.initial_state() {
-            Some(rs) => Some(Handle::new(ResonanceState::new(rs))),
-            None => None,
-        }
+        self.0
+            .initial_state()
+            .map(|rs| Handle::new(ResonanceState::new(rs)))
     }
-
     fn propagate_from_state(
         &self,
         t: f64,
         state: Option<Handle<ResonanceState>>,
         afspc_compatibility_mode: bool,
     ) -> Result<Prediction, SgpError> {
-        let mut rs = *state
-            .expect("Unable to get resonance state")
-            .0
-            .lock()
-            .expect("err");
+        let mut rs = state
+            .as_ref()
+            .map(|state: &Handle<ResonanceState>| state.0.lock().expect("Lock was poisoned"));
+        let rs = rs.as_deref_mut();
 
-        match self
+        Ok(self
             .0
-            .propagate_from_state(t, Some(&mut rs), afspc_compatibility_mode)
-        {
-            Ok(prediction) => Ok(prediction.into()),
-            Err(err) => Err(err.into()),
-        }
+            .propagate_from_state(t, rs, afspc_compatibility_mode)?
+            .into())
+    }
+
+    fn propagate(&self, t: f64) -> Result<Prediction, SgpError> {
+        Ok(self.0.propagate(t)?.into())
+    }
+
+    fn propagate_afspc_compatibility_mode(&self, t: f64) -> Result<Prediction, SgpError> {
+        Ok(self.0.propagate_afspc_compatibility_mode(t)?.into())
     }
 }
 
@@ -188,10 +170,8 @@ impl sgp4::Elements for Elements {
         line1: String,
         line2: String,
     ) -> Result<Handle<Elements>, SgpError> {
-        match original::Elements::from_tle(object_name, line1.as_bytes(), line2.as_bytes()) {
-            Ok(elements) => Ok(Handle::new(Elements::new(elements))),
-            Err(e) => Err(e.into()),
-        }
+        let state = original::Elements::from_tle(object_name, line1.as_bytes(), line2.as_bytes())?;
+        Ok(Handle::new(Elements::new(state)))
     }
 
     fn epoch(&self) -> f64 {
@@ -205,20 +185,26 @@ impl sgp4::Elements for Elements {
 
 impl From<original::Prediction> for Prediction {
     fn from(prediction: original::Prediction) -> Self {
-        let original::Prediction { position, velocity } = prediction;
+        let original::Prediction {
+            position: [p1, p2, p3],
+            velocity: [v1, v2, v3],
+        } = prediction;
         Prediction {
-            position: (position[0], position[1], position[2]),
-            velocity: (velocity[0], velocity[1], velocity[2]),
+            position: (p1, p2, p3),
+            velocity: (v1, v2, v3),
         }
     }
 }
 
-impl Into<original::Prediction> for Prediction {
-    fn into(self) -> original::Prediction {
-        let Prediction { position, velocity } = self;
+impl From<Prediction> for original::Prediction {
+    fn from(val: Prediction) -> Self {
+        let Prediction {
+            position: (p1, p2, p3),
+            velocity: (v1, v2, v3),
+        } = val;
         original::Prediction {
-            position: [position.0, position.1, position.2],
-            velocity: [velocity.0, velocity.1, velocity.2],
+            position: [p1, p2, p3],
+            velocity: [v1, v2, v3],
         }
     }
 }
@@ -244,8 +230,8 @@ impl From<original::Orbit> for Orbit {
     }
 }
 
-impl Into<original::Orbit> for Orbit {
-    fn into(self) -> original::Orbit {
+impl From<Orbit> for original::Orbit {
+    fn from(val: Orbit) -> Self {
         let Orbit {
             inclination,
             right_ascension,
@@ -253,7 +239,7 @@ impl Into<original::Orbit> for Orbit {
             argument_of_perigee,
             mean_anomaly,
             mean_motion,
-        } = self;
+        } = val;
         original::Orbit {
             inclination,
             right_ascension,
@@ -271,9 +257,9 @@ impl From<original::Geopotential> for Geopotential {
         Geopotential { ae, ke, j2, j3, j4 }
     }
 }
-impl Into<original::Geopotential> for Geopotential {
-    fn into(self) -> original::Geopotential {
-        let Geopotential { ae, ke, j2, j3, j4 } = self;
+impl From<Geopotential> for original::Geopotential {
+    fn from(val: Geopotential) -> Self {
+        let Geopotential { ae, ke, j2, j3, j4 } = val;
         original::Geopotential { ae, ke, j2, j3, j4 }
     }
 }
@@ -288,9 +274,9 @@ impl From<original::Classification> for Classification {
     }
 }
 
-impl Into<original::Classification> for Classification {
-    fn into(self) -> original::Classification {
-        match self {
+impl From<Classification> for original::Classification {
+    fn from(val: Classification) -> Self {
+        match val {
             Classification::Unclassified => original::Classification::Unclassified,
             Classification::Classified => original::Classification::Classified,
             Classification::Secret => original::Classification::Secret,
@@ -386,6 +372,7 @@ impl From<original::Elements> for ElementS {
             revolution_number,
             ephemeris_type,
         } = elements;
+
         ElementS {
             object_name,
             international_designator,
@@ -408,8 +395,8 @@ impl From<original::Elements> for ElementS {
     }
 }
 
-impl Into<original::Elements> for ElementS {
-    fn into(self) -> original::Elements {
+impl From<ElementS> for original::Elements {
+    fn from(val: ElementS) -> Self {
         let ElementS {
             object_name,
             international_designator,
@@ -428,7 +415,7 @@ impl Into<original::Elements> for ElementS {
             mean_motion,
             revolution_number,
             ephemeris_type,
-        } = self;
+        } = val;
         original::Elements {
             object_name,
             international_designator,
