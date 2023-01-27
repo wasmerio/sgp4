@@ -1,6 +1,5 @@
 // sgp4.wai
 
-
 /// underlying structs and variants for errors
 variant error-tle-what {
     bad-checksum,
@@ -36,11 +35,6 @@ record out-of-range-perturbed-eccentricity {
     t: float64,
 }
 
-record unix-timestamp {
-    secs: s64,
-    nanos: u32
-}
-
 record negative-semi-latus-rectum {
     t: float64,
 }
@@ -73,28 +67,6 @@ variant classification {
 
 
 
-
-/// Elements Struct, ⚠️ we are keeping datetime as a string 
-
-record element-s {
-    object-name: option<string>,
-    international-designator: option<string>,
-    norad-id: u64,
-    classification: classification,
-    datetime: string,
-    mean-motion-dot: float64,
-    mean-motion-ddot: float64,
-    drag-term: float64,
-    element-set-number: u64,
-    inclination: float64,
-    right-ascension: float64,
-    eccentricity: float64,
-    argument-of-perigee: float64,
-    mean-anomaly: float64,
-    mean-motion: float64,
-    revolution-number: u64,
-    ephemeris-type: u8,
-}
 
 resource elements {
     static from-tle: func(object-name: option<string>, line1: string, line2: string) -> expected<elements,error>
@@ -140,8 +112,8 @@ wgs84: func() -> geopotential
 
 afspc-epoch-to-sidereal-time: func(epoch: float64) -> float64
 iau-epoch-to-sidereal-time: func(epoch: float64) -> float64
-parse2les: func(tles: string) -> expected<list<element-s>,error>
-parse3les: func(tles: string) -> expected<list<element-s>,error> 
+parse2les: func(tles: string) -> expected<list<elements>,error>
+parse3les: func(tles: string) -> expected<list<elements>,error> 
 
 
 // get the t from resonanceState as all the fields are private and doeesn't allow automatic initialization
@@ -158,8 +130,8 @@ enum epoch-to-sidereal-time-algorithm {
 /// implmenetation for Constants
 resource constants {
     static new: func(geopotential: geopotential, epoch-to-sidereal-time: epoch-to-sidereal-time-algorithm, epoch: float64, drag-item: float64, orbit0: orbit) -> expected<constants, error>
-    static from-elements: func(elements: element-s) -> expected<constants, error>
-    static from-elements-afspc-compatibility-mode: func(elements: element-s) -> expected<constants, error>
+    static from-elements: func(elements: elements) -> expected<constants, error>
+    static from-elements-afspc-compatibility-mode: func(elements: elements) -> expected<constants, error>
     initial-state: func() -> option<resonance-state>
     propagate-from-state: func(t: float64, state: option<resonance-state>, afspc-compatibility-mode: bool) -> expected<prediction, error>
     propagate: func(t: float64) -> expected<prediction, error>

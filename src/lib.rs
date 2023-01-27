@@ -1,15 +1,13 @@
-use std::{str::FromStr, sync::Mutex};
+use std::sync::Mutex;
+use wai_bindgen_rust::Handle;
 
 use crate::sgp4::{
-    Classification, ElementS, EpochToSiderealTimeAlgorithm, Error as SgpError, ErrorTleLine,
-    ErrorTleWhat, Geopotential, NegativeSemiLatusRectum, Orbit, OutOfRangeEccentricity,
-    OutOfRangeEpochEccentricity, OutOfRangePerturbedEccentricity, Prediction, Tle,
+    EpochToSiderealTimeAlgorithm, Error as SgpError, ErrorTleLine, ErrorTleWhat, Geopotential,
+    NegativeSemiLatusRectum, Orbit, OutOfRangeEccentricity, OutOfRangeEpochEccentricity,
+    OutOfRangePerturbedEccentricity, Prediction, Tle,
 };
 
-use chrono::NaiveDateTime;
 use original::{self};
-
-use wai_bindgen_rust::Handle;
 
 wai_bindgen_rust::export!("sgp4.wai");
 
@@ -53,17 +51,17 @@ impl sgp4::Sgp4 for Sgp4 {
         original::iau_epoch_to_sidereal_time(epoch)
     }
 
-    fn parse2les(tles: String) -> Result<Vec<ElementS>, SgpError> {
+    fn parse2les(tles: String) -> Result<Vec<Handle<Elements>>, SgpError> {
         Ok(original::parse_2les(&tles)?
             .into_iter()
-            .map(|e| e.into())
+            .map(|e| Handle::new(e.into()))
             .collect())
     }
 
-    fn parse3les(tles: String) -> Result<Vec<ElementS>, SgpError> {
-        Ok(original::parse_3les(&tles)?
+    fn parse3les(tles: String) -> Result<Vec<Handle<Elements>>, SgpError> {
+        Ok(original::parse_2les(&tles)?
             .into_iter()
-            .map(|e| e.into())
+            .map(|e| Handle::new(e.into()))
             .collect())
     }
 }
@@ -113,23 +111,12 @@ impl sgp4::Constants for Constants {
         Ok(Handle::new(Constants::new_wrap(state)))
     }
 
-    fn from_elements(elements: ElementS) -> Result<Handle<Constants>, SgpError> {
-        let state = original::Constants::from_elements(&elements.into())?;
-        Ok(Handle::new(Constants::new_wrap(state)))
-    }
-
-    fn from_elements_afspc_compatibility_mode(
-        elements: ElementS,
-    ) -> Result<Handle<Constants>, SgpError> {
-        let state = original::Constants::from_elements_afspc_compatibility_mode(&elements.into())?;
-
-        Ok(Handle::new(Constants::new_wrap(state)))
-    }
     fn initial_state(&self) -> Option<Handle<ResonanceState>> {
         self.0
             .initial_state()
             .map(|rs| Handle::new(ResonanceState::new(rs)))
     }
+
     fn propagate_from_state(
         &self,
         t: f64,
@@ -153,6 +140,18 @@ impl sgp4::Constants for Constants {
 
     fn propagate_afspc_compatibility_mode(&self, t: f64) -> Result<Prediction, SgpError> {
         Ok(self.0.propagate_afspc_compatibility_mode(t)?.into())
+    }
+
+    fn from_elements(elements: Handle<Elements>) -> Result<Handle<Constants>, SgpError> {
+        let state = original::Constants::from_elements(&elements.0)?;
+        Ok(Handle::new(Constants::new_wrap(state)))
+    }
+
+    fn from_elements_afspc_compatibility_mode(
+        elements: Handle<Elements>,
+    ) -> Result<Handle<Constants>, SgpError> {
+        let state = original::Constants::from_elements_afspc_compatibility_mode(&elements.0)?;
+        Ok(Handle::new(Constants::new_wrap(state)))
     }
 }
 
@@ -264,26 +263,6 @@ impl From<Geopotential> for original::Geopotential {
     }
 }
 
-impl From<original::Classification> for Classification {
-    fn from(classification: original::Classification) -> Self {
-        match classification {
-            original::Classification::Unclassified => Classification::Unclassified,
-            original::Classification::Classified => Classification::Classified,
-            original::Classification::Secret => Classification::Secret,
-        }
-    }
-}
-
-impl From<Classification> for original::Classification {
-    fn from(val: Classification) -> Self {
-        match val {
-            Classification::Unclassified => original::Classification::Unclassified,
-            Classification::Classified => original::Classification::Classified,
-            Classification::Secret => original::Classification::Secret,
-        }
-    }
-}
-
 impl From<original::ErrorTleLine> for ErrorTleLine {
     fn from(e: original::ErrorTleLine) -> Self {
         match e {
@@ -351,89 +330,14 @@ impl From<original::Error> for SgpError {
     }
 }
 
-impl From<original::Elements> for ElementS {
+impl From<original::Elements> for Elements {
     fn from(elements: original::Elements) -> Self {
-        let original::Elements {
-            object_name,
-            international_designator,
-            norad_id,
-            classification,
-            datetime,
-            mean_motion_dot,
-            mean_motion_ddot,
-            drag_term,
-            element_set_number,
-            inclination,
-            right_ascension,
-            eccentricity,
-            argument_of_perigee,
-            mean_anomaly,
-            mean_motion,
-            revolution_number,
-            ephemeris_type,
-        } = elements;
-
-        ElementS {
-            object_name,
-            international_designator,
-            norad_id,
-            classification: classification.into(),
-            datetime: datetime.to_string(),
-            mean_motion_dot,
-            mean_motion_ddot,
-            drag_term,
-            element_set_number,
-            inclination,
-            right_ascension,
-            eccentricity,
-            argument_of_perigee,
-            mean_anomaly,
-            mean_motion,
-            revolution_number,
-            ephemeris_type,
-        }
+        Elements::new(elements)
     }
 }
 
-impl From<ElementS> for original::Elements {
-    fn from(val: ElementS) -> Self {
-        let ElementS {
-            object_name,
-            international_designator,
-            norad_id,
-            classification,
-            datetime,
-            mean_motion_dot,
-            mean_motion_ddot,
-            drag_term,
-            element_set_number,
-            inclination,
-            right_ascension,
-            eccentricity,
-            argument_of_perigee,
-            mean_anomaly,
-            mean_motion,
-            revolution_number,
-            ephemeris_type,
-        } = val;
-        original::Elements {
-            object_name,
-            international_designator,
-            norad_id,
-            classification: classification.into(),
-            datetime: NaiveDateTime::from_str(&datetime).expect("Failed to parse NaiveDateTime"),
-            mean_motion_dot,
-            mean_motion_ddot,
-            drag_term,
-            element_set_number,
-            inclination,
-            right_ascension,
-            eccentricity,
-            argument_of_perigee,
-            mean_anomaly,
-            mean_motion,
-            revolution_number,
-            ephemeris_type,
-        }
+impl From<Elements> for original::Elements {
+    fn from(elements: Elements) -> Self {
+        elements.0
     }
 }
