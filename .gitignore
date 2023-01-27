@@ -1,2 +1,6 @@
 /target
 /Cargo.lock
+
+snapshots
+node_modules
+generated_bindings

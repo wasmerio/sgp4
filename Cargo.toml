@@ -19,10 +19,18 @@ bindings = { wai-version = "0.2.0", exports = "sgp4.wai" }
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[patch.crates-io]
+original = { path = "../../Rust/sgp4", package = "sgp4" }
+
 [dependencies]
 wai-bindgen-rust = "0.2.2"
 original = { version = "0.8.2", package = "sgp4" }
-chrono = "0.4.23"
 
-[patch.crates-io]
-original = { path = "../../Rust/sgp4", package = "sgp4" }
+[dev-dependencies]
+anyhow = "1.0.68"
+tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
+wasmer-pack-testing = "0.6.0"
+
+[[test]]
+name = "sgp4-integration-tests"
+harness = false
