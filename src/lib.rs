@@ -1,17 +1,17 @@
 use std::sync::Mutex;
 use wai_bindgen_rust::Handle;
 
-use crate::sgp4::{
-    EpochToSiderealTimeAlgorithm, Error as SgpError, ErrorTleLine, ErrorTleWhat, Geopotential,
-    NegativeSemiLatusRectum, Orbit, OutOfRangeEccentricity, OutOfRangeEpochEccentricity,
-    OutOfRangePerturbedEccentricity, Prediction, Tle,
+pub use crate::sgp4::{
+    Classification, EpochToSiderealTimeAlgorithm, Error as SgpError, ErrorTleLine, ErrorTleWhat,
+    Geopotential, NegativeSemiLatusRectum, Orbit, OutOfRangeEccentricity,
+    OutOfRangeEpochEccentricity, OutOfRangePerturbedEccentricity, Prediction, Tle, UnixTimestamp,
 };
 
 use original::{self};
 
 wai_bindgen_rust::export!("sgp4.wai");
 
-struct Sgp4;
+pub struct Sgp4;
 
 impl sgp4::Sgp4 for Sgp4 {
     fn orbit_from_kozai_elements(
@@ -80,7 +80,6 @@ impl sgp4::ResonanceState for ResonanceState {
 }
 
 pub struct Constants(original::Constants);
-
 impl Constants {
     fn new_wrap(state: original::Constants) -> Self {
         Constants(state)
@@ -156,7 +155,6 @@ impl sgp4::Constants for Constants {
 }
 
 pub struct Elements(original::Elements);
-
 impl Elements {
     fn new(state: original::Elements) -> Self {
         Elements(state)
@@ -180,7 +178,80 @@ impl sgp4::Elements for Elements {
     fn epoch_afspc_compatibility_mode(&self) -> f64 {
         self.0.epoch_afspc_compatibility_mode()
     }
+
+    fn get_object_name(&self) -> Option<String> {
+        self.0.object_name.clone()
+    }
+
+    fn get_international_designator(&self) -> Option<String> {
+        self.0.international_designator.clone()
+    }
+
+    fn get_norad_id(&self) -> u64 {
+        self.0.norad_id
+    }
+
+    fn get_classification(&self) -> Classification {
+        Classification::from(&self.0.classification)
+    }
+
+    fn get_datetime(&self) -> UnixTimestamp {
+        UnixTimestamp {
+            secs: self.0.datetime.timestamp(),
+            nsecs: self.0.datetime.timestamp_subsec_nanos(),
+        }
+    }
+
+    fn get_mean_motion_dot(&self) -> f64 {
+        self.0.mean_motion_dot
+    }
+
+    fn get_mean_motion_ddot(&self) -> f64 {
+        self.0.mean_motion_ddot
+    }
+
+    fn get_drag_term(&self) -> f64 {
+        self.0.drag_term
+    }
+
+    fn get_element_set_number(&self) -> u64 {
+        self.0.element_set_number
+    }
+
+    fn get_inclination(&self) -> f64 {
+        self.0.inclination
+    }
+
+    fn get_right_ascension(&self) -> f64 {
+        self.0.right_ascension
+    }
+
+    fn get_eccentricity(&self) -> f64 {
+        self.0.eccentricity
+    }
+
+    fn get_argument_of_perigee(&self) -> f64 {
+        self.0.argument_of_perigee
+    }
+
+    fn get_mean_anomaly(&self) -> f64 {
+        self.0.mean_anomaly
+    }
+
+    fn get_mean_motion(&self) -> f64 {
+        self.0.mean_anomaly
+    }
+
+    fn get_revolution_number(&self) -> u64 {
+        self.0.revolution_number
+    }
+
+    fn get_ephemeris_type(&self) -> u8 {
+        self.0.ephemeris_type
+    }
 }
+
+// From traits for conversion from original to self and vice-versa
 
 impl From<original::Prediction> for Prediction {
     fn from(prediction: original::Prediction) -> Self {
@@ -291,10 +362,6 @@ impl From<original::ErrorTleWhat> for ErrorTleWhat {
             }
             original::ErrorTleWhat::NoradIdMismatch => ErrorTleWhat::NoradIdMismatch,
             original::ErrorTleWhat::UnknownClassification => ErrorTleWhat::UnknownClassification,
-            original::ErrorTleWhat::FromYoOptFailed => ErrorTleWhat::FromYoOptFailed,
-            original::ErrorTleWhat::FromNumSecondsFromMidnightFailed => {
-                ErrorTleWhat::FromNumSecondsFromMidnightFailed
-            }
         }
     }
 }
@@ -343,5 +410,15 @@ impl From<original::Elements> for Elements {
 impl From<Elements> for original::Elements {
     fn from(elements: Elements) -> Self {
         elements.0
+    }
+}
+
+impl From<&original::Classification> for Classification {
+    fn from(classification: &original::Classification) -> Self {
+        match classification {
+            original::Classification::Unclassified => Classification::Unclassified,
+            original::Classification::Classified => Classification::Classified,
+            original::Classification::Secret => Classification::Secret,
+        }
     }
 }
