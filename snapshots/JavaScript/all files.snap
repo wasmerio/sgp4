@@ -1,0 +1,12 @@
+---
+source: /Users/xorcist/.cargo/registry/src/github.com-1ecc6299db9ec823/wasmer-pack-testing-0.6.0/src/autodiscover.rs
+---
+[
+    "generated_bindings/JavaScript/package/src/bindings/index.d.ts",
+    "generated_bindings/JavaScript/package/src/bindings/index.js",
+    "generated_bindings/JavaScript/package/src/bindings/sgp4/intrinsics.js",
+    "generated_bindings/JavaScript/package/src/bindings/sgp4/sgp4.d.ts",
+    "generated_bindings/JavaScript/package/src/bindings/sgp4/sgp4.js",
+    "generated_bindings/JavaScript/package/src/index.d.ts",
+    "generated_bindings/JavaScript/package/src/index.js",
+]
