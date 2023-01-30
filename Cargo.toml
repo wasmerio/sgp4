@@ -21,8 +21,5 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 wai-bindgen-rust = "0.2.2"
-original = { version = "0.8.2", package = "sgp4" }
+original = { version = "0.9.1", package = "sgp4" }
 chrono = "0.4.23"
-
-[patch.crates-io]
-original = { git = "https://github.com/dynamite-bud/sgp4.git", package = "sgp4" }
