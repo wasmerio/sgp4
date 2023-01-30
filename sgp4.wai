@@ -13,6 +13,8 @@ variant error-tle-what {
     float-with-assumed-decimal-point-too-long,
     norad-id-mismatch,
     unknown-classification,
+    from-yo-opt-failed,
+    from-num-seconds-from-midnight-failed,
 }
 
 variant error-tle-line {
@@ -113,7 +115,7 @@ wgs84: func() -> geopotential
 afspc-epoch-to-sidereal-time: func(epoch: float64) -> float64
 iau-epoch-to-sidereal-time: func(epoch: float64) -> float64
 parse2les: func(tles: string) -> expected<list<elements>,error>
-parse3les: func(tles: string) -> expected<list<elements>,error> 
+parse3les: func(tles: string) -> expected<list<elements>,error>
 
 
 // get the t from resonanceState as all the fields are private and doeesn't allow automatic initialization

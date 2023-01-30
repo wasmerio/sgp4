@@ -320,14 +320,15 @@ name = "sgp4"
 version = "0.1.0"
 dependencies = [
  "chrono",
- "sgp4 0.8.2",
+ "sgp4 0.9.1",
  "wai-bindgen-rust",
 ]
 
 [[package]]
 name = "sgp4"
-version = "0.8.2"
-source = "git+https://github.com/dynamite-bud/sgp4.git#4bc441d29903b703cc85709224397a9468f2c96d"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "375c65e48ba1bf0f964f91cac83339b5294888e9605d882a1646f7eaebbcc498"
 dependencies = [
  "anyhow",
  "chrono",

@@ -291,6 +291,10 @@ impl From<original::ErrorTleWhat> for ErrorTleWhat {
             }
             original::ErrorTleWhat::NoradIdMismatch => ErrorTleWhat::NoradIdMismatch,
             original::ErrorTleWhat::UnknownClassification => ErrorTleWhat::UnknownClassification,
+            original::ErrorTleWhat::FromYoOptFailed => ErrorTleWhat::FromYoOptFailed,
+            original::ErrorTleWhat::FromNumSecondsFromMidnightFailed => {
+                ErrorTleWhat::FromNumSecondsFromMidnightFailed
+            }
         }
     }
 }
