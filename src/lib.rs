@@ -66,7 +66,7 @@ impl sgp4::Sgp4 for Sgp4 {
     }
 }
 
-struct ResonanceState(Mutex<original::ResonanceState>);
+pub struct ResonanceState(Mutex<original::ResonanceState>);
 impl ResonanceState {
     fn new(state: original::ResonanceState) -> Self {
         ResonanceState(Mutex::new(state))
@@ -79,7 +79,7 @@ impl sgp4::ResonanceState for ResonanceState {
     }
 }
 
-struct Constants(original::Constants);
+pub struct Constants(original::Constants);
 
 impl Constants {
     fn new_wrap(state: original::Constants) -> Self {
@@ -155,7 +155,7 @@ impl sgp4::Constants for Constants {
     }
 }
 
-struct Elements(original::Elements);
+pub struct Elements(original::Elements);
 
 impl Elements {
     fn new(state: original::Elements) -> Self {
