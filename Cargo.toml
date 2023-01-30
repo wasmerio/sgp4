@@ -25,4 +25,4 @@ original = { version = "0.8.2", package = "sgp4" }
 chrono = "0.4.23"
 
 [patch.crates-io]
-original = { path = "../../Rust/sgp4", package = "sgp4" }
+original = { git = "https://github.com/dynamite-bud/sgp4", package = "sgp4" }
