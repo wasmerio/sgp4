@@ -2,10 +2,11 @@ const { bindings } = require("@wasmer/sgp4");
 const {
   Elements,
   Constants,
-  SgpError,
   ErrorOutOfRangePerturbedEccentricity,
   ErrorNegativeSemiLatusRectum,
 } = require("@wasmer/sgp4/src/bindings/sgp4/sgp4.js");
+
+const { test, expect } = require("@jest/globals");
 
 const TEST_CASE_DATA = require("./tests/test-cases.json").list;
 
@@ -37,15 +38,16 @@ test("SGP4 List-State Test", async () => {
           const { error, time } = state;
           const predictionResult =
             constants.propagateAfspcCompatibilityMode(time);
+
           if (predictionResult.tag === "err") {
             let { tag: errorTag, val: errorVal } = predictionResult.val;
-            console.log(SgpError);
+            const { t } = errorVal;
             switch (errorTag) {
-              case ErrorOutOfRangePerturbedEccentricity:
-                console.log("ErrorOutOfRangePerturbedEccentricity");
+              case "out-of-range-perturbed-eccentricity":
+                expect(t).toEqual(time);
                 break;
-              case ErrorNegativeSemiLatusRectum:
-                console.log("ErrorNegativeSemiLatusRectum");
+              case "negative-semi-latus-rectum":
+                expect(t).toEqual(time);
                 break;
               default:
                 throw "Unknown error";
