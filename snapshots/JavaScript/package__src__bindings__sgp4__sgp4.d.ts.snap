@@ -5,7 +5,7 @@ export type Result<T, E> = { tag: "ok", val: T } | { tag: "err", val: E };
 /**
 * underlying structs and variants for errors
 */
-export type ErrorTleWhat = ErrorTleWhatBadChecksum | ErrorTleWhatBadLength | ErrorTleWhatBadFirstCharacter | ErrorTleWhatExpectedFloat | ErrorTleWhatExpectedFloatWithAssumedDecimalPoint | ErrorTleWhatExpectedInteger | ErrorTleWhatExpectedSpace | ErrorTleWhatExpectedString | ErrorTleWhatFloatWithAssumedDecimalPointTooLong | ErrorTleWhatNoradIdMismatch | ErrorTleWhatUnknownClassification;
+export type ErrorTleWhat = ErrorTleWhatBadChecksum | ErrorTleWhatBadLength | ErrorTleWhatBadFirstCharacter | ErrorTleWhatExpectedFloat | ErrorTleWhatExpectedFloatWithAssumedDecimalPoint | ErrorTleWhatExpectedInteger | ErrorTleWhatExpectedSpace | ErrorTleWhatExpectedString | ErrorTleWhatFloatWithAssumedDecimalPointTooLong | ErrorTleWhatNoradIdMismatch | ErrorTleWhatUnknownClassification | ErrorTleWhatFromYoOptFailed | ErrorTleWhatFromNumSecondsFromMidnightFailed;
 export interface ErrorTleWhatBadChecksum {
   tag: "bad-checksum",
 }
@@ -38,6 +38,12 @@ export interface ErrorTleWhatNoradIdMismatch {
 }
 export interface ErrorTleWhatUnknownClassification {
   tag: "unknown-classification",
+}
+export interface ErrorTleWhatFromYoOptFailed {
+  tag: "from-yo-opt-failed",
+}
+export interface ErrorTleWhatFromNumSecondsFromMidnightFailed {
+  tag: "from-num-seconds-from-midnight-failed",
 }
 export type ErrorTleLine = ErrorTleLineLine1 | ErrorTleLineLine2 | ErrorTleLineBoth;
 export interface ErrorTleLineLine1 {

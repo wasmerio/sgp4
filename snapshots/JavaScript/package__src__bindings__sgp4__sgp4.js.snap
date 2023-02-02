@@ -218,6 +218,18 @@ class Sgp4 {
                 };
                 break;
               }
+              case 11: {
+                variant1 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant1 = {
+                  tag: "from-num-seconds-from-midnight-failed",
+                };
+                break;
+              }
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleWhat");
             }
@@ -443,6 +455,18 @@ class Sgp4 {
                 };
                 break;
               }
+              case 11: {
+                variant2 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant2 = {
+                  tag: "from-num-seconds-from-midnight-failed",
+                };
+                break;
+              }
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleWhat");
             }
@@ -635,6 +659,18 @@ class Sgp4 {
               case 10: {
                 variant2 = {
                   tag: "unknown-classification",
+                };
+                break;
+              }
+              case 11: {
+                variant2 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant2 = {
+                  tag: "from-num-seconds-from-midnight-failed",
                 };
                 break;
               }
@@ -874,6 +910,18 @@ class Elements {
               case 10: {
                 variant4 = {
                   tag: "unknown-classification",
+                };
+                break;
+              }
+              case 11: {
+                variant4 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant4 = {
+                  tag: "from-num-seconds-from-midnight-failed",
                 };
                 break;
               }
@@ -1299,6 +1347,18 @@ class Constants {
                 };
                 break;
               }
+              case 11: {
+                variant3 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant3 = {
+                  tag: "from-num-seconds-from-midnight-failed",
+                };
+                break;
+              }
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleWhat");
             }
@@ -1484,6 +1544,18 @@ class Constants {
                 };
                 break;
               }
+              case 11: {
+                variant1 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant1 = {
+                  tag: "from-num-seconds-from-midnight-failed",
+                };
+                break;
+              }
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleWhat");
             }
@@ -1666,6 +1738,18 @@ class Constants {
               case 10: {
                 variant1 = {
                   tag: "unknown-classification",
+                };
+                break;
+              }
+              case 11: {
+                variant1 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant1 = {
+                  tag: "from-num-seconds-from-midnight-failed",
                 };
                 break;
               }
@@ -1900,6 +1984,18 @@ class Constants {
                 };
                 break;
               }
+              case 11: {
+                variant3 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant3 = {
+                  tag: "from-num-seconds-from-midnight-failed",
+                };
+                break;
+              }
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleWhat");
             }
@@ -2087,6 +2183,18 @@ class Constants {
                 };
                 break;
               }
+              case 11: {
+                variant1 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant1 = {
+                  tag: "from-num-seconds-from-midnight-failed",
+                };
+                break;
+              }
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleWhat");
             }
@@ -2271,6 +2379,18 @@ class Constants {
               case 10: {
                 variant1 = {
                   tag: "unknown-classification",
+                };
+                break;
+              }
+              case 11: {
+                variant1 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant1 = {
+                  tag: "from-num-seconds-from-midnight-failed",
                 };
                 break;
               }
