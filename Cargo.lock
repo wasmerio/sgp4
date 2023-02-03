@@ -1396,7 +1396,7 @@ name = "sgp4"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "sgp4 0.8.2",
+ "sgp4 0.9.1",
  "tracing-subscriber",
  "wai-bindgen-rust",
  "wasmer-pack-testing",
@@ -1404,7 +1404,9 @@ dependencies = [
 
 [[package]]
 name = "sgp4"
-version = "0.8.2"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "375c65e48ba1bf0f964f91cac83339b5294888e9605d882a1646f7eaebbcc498"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2390,3 +2392,7 @@ checksum = "56c1936c4cc7a1c9ab21a1ebb602eb942ba868cbd44a99cb7cdc5892335e1c85"
 dependencies = [
  "linked-hash-map",
 ]
+
+[[patch.unused]]
+name = "sgp4"
+version = "0.8.2"
