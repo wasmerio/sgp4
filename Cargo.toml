@@ -19,6 +19,9 @@ bindings = { wai-version = "0.2.0", exports = "sgp4.wai" }
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[patch.crates-io]
+wasmer-pack-testing = { git = "https://github.com/dynamite-bud/wasmer-pack" }
+
 [dependencies]
 wai-bindgen-rust = "0.2.2"
 original = { version = "0.9.1", package = "sgp4" }

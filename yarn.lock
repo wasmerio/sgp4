@@ -651,6 +651,9 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@wasmer/sgp4@./generated_bindings/JavaScript/package":
+  version "0.1.0"
+
 ansi-escapes@^4.2.1:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-4.3.2.tgz#6b2291d1db7d98b6521d5f1efa42d0f3a9feb65e"

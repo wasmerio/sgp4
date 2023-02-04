@@ -1994,22 +1994,6 @@ dependencies = [
 
 [[package]]
 name = "wapm-toml"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bde48580008d83994e59db51dc23d200d91c06d6b82f59a955717d589dac29b5"
-dependencies = [
- "anyhow",
- "semver",
- "serde",
- "serde_cbor",
- "serde_json",
- "serde_yaml 0.9.17",
- "thiserror",
- "toml",
-]
-
-[[package]]
-name = "wapm-toml"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "994ef26447f3158955d2e3fca96021d1f1c47b830e2053569177673dca1447a9"
@@ -2111,9 +2095,8 @@ dependencies = [
 
 [[package]]
 name = "wasmer-pack"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "252044ff215a7b3a7f6dc572dad66361656225359908ffd3b3b63902896aeb80"
+version = "0.6.1"
+source = "git+https://github.com/dynamite-bud/wasmer-pack#9882cbe9615bb027bb575f0fc178656b9650caa2"
 dependencies = [
  "anyhow",
  "heck 0.4.1",
@@ -2130,25 +2113,23 @@ dependencies = [
 
 [[package]]
 name = "wasmer-pack-cli"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d6d15df4ddec9af96729058d42beb8be6ec5e317a47bf5dafe06f3e81fecba1b"
+version = "0.6.1"
+source = "git+https://github.com/dynamite-bud/wasmer-pack#9882cbe9615bb027bb575f0fc178656b9650caa2"
 dependencies = [
  "anyhow",
  "clap",
  "serde",
  "serde_json",
  "wapm-targz-to-pirita",
- "wapm-toml 0.3.3",
+ "wapm-toml 0.4.0",
  "wasmer-pack",
  "webc 4.1.1",
 ]
 
 [[package]]
 name = "wasmer-pack-testing"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb63c9459052ff7f78512d34d776c502823673f918c6d7722269e0e5c73fbd6e"
+version = "0.6.1"
+source = "git+https://github.com/dynamite-bud/wasmer-pack#9882cbe9615bb027bb575f0fc178656b9650caa2"
 dependencies = [
  "anyhow",
  "ignore",
