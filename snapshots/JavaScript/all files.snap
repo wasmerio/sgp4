@@ -1,12 +1,12 @@
 ---
-source: "D:/Projects/Wasmer/wasmer-pack/crates/testing/src/autodiscover.rs"
+source: /Users/xorcist/.cargo/git/checkouts/wasmer-pack-75f531527ab88b95/9882cbe/crates/testing/src/autodiscover.rs
 ---
 [
-    "generated_bindings\\JavaScript\\package\\src\\bindings\\index.d.ts",
-    "generated_bindings\\JavaScript\\package\\src\\bindings\\index.js",
-    "generated_bindings\\JavaScript\\package\\src\\bindings\\sgp4\\intrinsics.js",
-    "generated_bindings\\JavaScript\\package\\src\\bindings\\sgp4\\sgp4.d.ts",
-    "generated_bindings\\JavaScript\\package\\src\\bindings\\sgp4\\sgp4.js",
-    "generated_bindings\\JavaScript\\package\\src\\index.d.ts",
-    "generated_bindings\\JavaScript\\package\\src\\index.js",
+    "generated_bindings/JavaScript/package/src/bindings/index.d.ts",
+    "generated_bindings/JavaScript/package/src/bindings/index.js",
+    "generated_bindings/JavaScript/package/src/bindings/sgp4/intrinsics.js",
+    "generated_bindings/JavaScript/package/src/bindings/sgp4/sgp4.d.ts",
+    "generated_bindings/JavaScript/package/src/bindings/sgp4/sgp4.js",
+    "generated_bindings/JavaScript/package/src/index.d.ts",
+    "generated_bindings/JavaScript/package/src/index.js",
 ]
