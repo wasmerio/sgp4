@@ -1,0 +1,33 @@
+---
+source: /Users/xorcist/.cargo/git/checkouts/wasmer-pack-75f531527ab88b95/9882cbe/crates/testing/src/autodiscover.rs
+---
+const fs = require("fs/promises");
+const { Sgp4: _Sgp4 } = require("./sgp4/sgp4.js");
+
+class Bindings {
+    constructor() {
+        this._cache = {}
+    }
+
+    /** Lazily fetch and compile the WebAssembly module */
+    async _getModule(filename) {
+        if (filename in this._cache) {
+            return this._cache[filename];
+        }
+
+        const wasm = await fs.readFile(`${__dirname}/${filename}`);
+        this._cache[filename] = await WebAssembly.compile(wasm);
+        return this._cache[filename];
+    }
+    async sgp4(options) {
+        const wrapper = new _Sgp4();
+        const module = await this._getModule("sgp4/sgp4.wasm");
+        const imports = options?.imports || {};
+
+        await wrapper.instantiate(module, imports);
+
+        return wrapper;
+    }
+}
+
+module.exports = { Bindings };

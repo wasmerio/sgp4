@@ -60,20 +60,38 @@ variant error {
     tle(tle),
 }
 
-/// Classification variant
-variant classification {
-    unclassified,
-    classified,
-    secret
+record unix-timestamp {
+    secs: s64, 
+    nsecs: u32
 }
 
-
-
+enum classification {
+    unclassified,
+    classified,
+    secret,
+}
 
 resource elements {
     static from-tle: func(object-name: option<string>, line1: string, line2: string) -> expected<elements,error>
     epoch: func() -> float64
     epoch-afspc-compatibility-mode: func() -> float64
+    get-object-name: func() -> option<string>
+    get-international-designator: func() -> option<string>
+    get-norad-id: func() -> u64
+    get-classification: func() -> classification 
+    get-datetime: func() -> unix-timestamp
+    get-mean-motion-dot: func() -> float64
+    get-mean-motion-ddot: func() -> float64
+    get-drag-term: func() -> float64
+    get-element-set-number: func() -> u64 
+    get-inclination: func() -> float64 
+    get-right-ascension: func() -> float64 
+    get-eccentricity: func() -> float64 
+    get-argument-of-perigee: func() -> float64 
+    get-mean-anomaly: func() -> float64 
+    get-mean-motion: func() -> float64 
+    get-revolution-number: func() -> u64 
+    get-ephemeris-type: func() -> u8
 }
 
 

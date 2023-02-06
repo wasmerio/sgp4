@@ -1,0 +1,14 @@
+{
+  "name": "sgp4",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/wasmerio/sgp4.git",
+  "author": "Rudra <aroraru@tcd.ie>",
+  "license": "MIT",
+  "dependencies": {
+    "@wasmer/sgp4": "./generated_bindings/JavaScript/package"
+  },
+  "devDependencies": {
+    "jest": "^29.4.1"
+  }
+}
