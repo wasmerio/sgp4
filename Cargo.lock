@@ -2096,7 +2096,7 @@ dependencies = [
 [[package]]
 name = "wasmer-pack"
 version = "0.6.1"
-source = "git+https://github.com/dynamite-bud/wasmer-pack#9882cbe9615bb027bb575f0fc178656b9650caa2"
+source = "git+https://github.com/dynamite-bud/wasmer-pack#28f5de4d65028ed143aaca48a5bf08f0a3ae0c90"
 dependencies = [
  "anyhow",
  "heck 0.4.1",
@@ -2114,7 +2114,7 @@ dependencies = [
 [[package]]
 name = "wasmer-pack-cli"
 version = "0.6.1"
-source = "git+https://github.com/dynamite-bud/wasmer-pack#9882cbe9615bb027bb575f0fc178656b9650caa2"
+source = "git+https://github.com/dynamite-bud/wasmer-pack#28f5de4d65028ed143aaca48a5bf08f0a3ae0c90"
 dependencies = [
  "anyhow",
  "clap",
@@ -2129,7 +2129,7 @@ dependencies = [
 [[package]]
 name = "wasmer-pack-testing"
 version = "0.6.1"
-source = "git+https://github.com/dynamite-bud/wasmer-pack#9882cbe9615bb027bb575f0fc178656b9650caa2"
+source = "git+https://github.com/dynamite-bud/wasmer-pack#28f5de4d65028ed143aaca48a5bf08f0a3ae0c90"
 dependencies = [
  "anyhow",
  "ignore",
