@@ -1,6 +1,6 @@
 [package]
 name = "sgp4"
-version = "0.1.0"
+version = "0.1.2"
 edition = "2021"
 description = "sgp4 for wasm, published on WAPM"
 authors = ["Wasmer Engineering Team <engineering@wasmer.io>"]
@@ -25,6 +25,7 @@ wasmer-pack-testing = { git = "https://github.com/dynamite-bud/wasmer-pack" }
 [dependencies]
 wai-bindgen-rust = "0.2.2"
 original = { version = "0.9.1", package = "sgp4" }
+serde_json = "1.0.92"
 
 [dev-dependencies]
 anyhow = "1.0.68"

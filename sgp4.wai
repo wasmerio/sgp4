@@ -58,6 +58,7 @@ variant error {
     negative-kozai-mean-motion,
     negative-semi-latus-rectum(negative-semi-latus-rectum),
     tle(tle),
+    json-parse(string)
 }
 
 record unix-timestamp {
@@ -73,6 +74,7 @@ enum classification {
 
 resource elements {
     static from-tle: func(object-name: option<string>, line1: string, line2: string) -> expected<elements,error>
+    static from-json: func(json: string) -> expected<elements,error>
     epoch: func() -> float64
     epoch-afspc-compatibility-mode: func() -> float64
     get-object-name: func() -> option<string>
