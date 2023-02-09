@@ -171,6 +171,11 @@ impl sgp4::Elements for Elements {
         Ok(Handle::new(Elements::new(state)))
     }
 
+    fn from_json(json: String) -> Result<Handle<Elements>, SgpError> {
+        let state: original::Elements = serde_json::from_str(&json)?;
+        Ok(Handle::new(Elements::new(state)))
+    }
+
     fn epoch(&self) -> f64 {
         self.0.epoch()
     }
@@ -405,6 +410,11 @@ impl From<original::Error> for SgpError {
     }
 }
 
+impl From<serde_json::Error> for SgpError {
+    fn from(e: serde_json::Error) -> Self {
+        SgpError::JsonParse(e.to_string())
+    }
+}
 impl From<original::Elements> for Elements {
     fn from(elements: original::Elements) -> Self {
         Elements::new(elements)

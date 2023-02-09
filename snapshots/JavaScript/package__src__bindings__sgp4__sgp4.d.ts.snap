@@ -1,5 +1,5 @@
 ---
-source: /Users/xorcist/.cargo/git/checkouts/wasmer-pack-75f531527ab88b95/9882cbe/crates/testing/src/autodiscover.rs
+source: /Users/xorcist/.cargo/git/checkouts/wasmer-pack-75f531527ab88b95/28f5de4/crates/testing/src/autodiscover.rs
 ---
 export type Result<T, E> = { tag: "ok", val: T } | { tag: "err", val: E };
 /**
@@ -78,7 +78,7 @@ export interface Tle {
 /**
 * main error variant
 */
-export type Error = ErrorOutOfRangeEpochEccentricity | ErrorOutOfRangeEccentricity | ErrorOutOfRangePerturbedEccentricity | ErrorNegativeBrouwerMeanMotion | ErrorNegativeKozaiMeanMotion | ErrorNegativeSemiLatusRectum | ErrorTle;
+export type Error = ErrorOutOfRangeEpochEccentricity | ErrorOutOfRangeEccentricity | ErrorOutOfRangePerturbedEccentricity | ErrorNegativeBrouwerMeanMotion | ErrorNegativeKozaiMeanMotion | ErrorNegativeSemiLatusRectum | ErrorTle | ErrorJsonParse;
 export interface ErrorOutOfRangeEpochEccentricity {
   tag: "out-of-range-epoch-eccentricity",
   val: OutOfRangeEpochEccentricity,
@@ -104,6 +104,10 @@ export interface ErrorNegativeSemiLatusRectum {
 export interface ErrorTle {
   tag: "tle",
   val: Tle,
+}
+export interface ErrorJsonParse {
+  tag: "json-parse",
+  val: string,
 }
 export interface UnixTimestamp {
   secs: bigint,
@@ -263,6 +267,7 @@ export class Elements {
   // strong reference count.
   drop(): void;
   static fromTle(sgp4: Sgp4, objectName: string | null, line1: string, line2: string): Result<Elements, Error>;
+  static fromJson(sgp4: Sgp4, json: string): Result<Elements, Error>;
   epoch(): number;
   epochAfspcCompatibilityMode(): number;
   getObjectName(): string | null;
