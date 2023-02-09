@@ -1,5 +1,5 @@
 ---
-source: /Users/xorcist/.cargo/git/checkouts/wasmer-pack-75f531527ab88b95/9882cbe/crates/testing/src/autodiscover.rs
+source: /Users/xorcist/.cargo/git/checkouts/wasmer-pack-75f531527ab88b95/28f5de4/crates/testing/src/autodiscover.rs
 ---
 const { clamp_guest, data_view, to_string, UTF8_DECODER, utf8_encode, utf8_encoded_len, Slab } = require('./intrinsics.js');
 class Sgp4 {
@@ -79,14 +79,15 @@ class Sgp4 {
   }
   orbitFromKozaiElements(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
     const memory = this._exports.memory;
+    const free = this._exports["canonical_abi_free"];
     const {ae: v0_0, ke: v0_1, j2: v0_2, j3: v0_3, j4: v0_4 } = arg0;
     const ret = this._exports['orbit-from-kozai-elements'](+v0_0, +v0_1, +v0_2, +v0_3, +v0_4, +arg1, +arg2, +arg3, +arg4, +arg5, +arg6);
     
-    let variant4;
+    let variant5;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         
-        variant4 = { tag: "ok", val: {
+        variant5 = { tag: "ok", val: {
           inclination: data_view(memory).getFloat64(ret + 8, true),
           rightAscension: data_view(memory).getFloat64(ret + 16, true),
           eccentricity: data_view(memory).getFloat64(ret + 24, true),
@@ -97,10 +98,10 @@ class Sgp4 {
         break;
       }
       case 1: {
-        let variant3;
+        let variant4;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -109,7 +110,7 @@ class Sgp4 {
             break;
           }
           case 1: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -119,7 +120,7 @@ class Sgp4 {
             break;
           }
           case 2: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -129,19 +130,19 @@ class Sgp4 {
             break;
           }
           case 3: {
-            variant3 = {
+            variant4 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant3 = {
+            variant4 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant3 = {
+            variant4 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -256,7 +257,7 @@ class Sgp4 {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant3 = {
+            variant4 = {
               tag: "tle",
               val: {
                 what: variant1,
@@ -267,18 +268,29 @@ class Sgp4 {
             };
             break;
           }
+          case 7: {
+            const ptr3 = data_view(memory).getInt32(ret + 16, true);
+            const len3 = data_view(memory).getInt32(ret + 20, true);
+            const list3 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr3, len3));
+            free(ptr3, len3, 1);
+            variant4 = {
+              tag: "json-parse",
+              val: list3,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant4 = { tag: "err", val: variant3 };
+        variant5 = { tag: "err", val: variant4 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant4;
+    return variant5;
   }
   wgs72() {
     const memory = this._exports.memory;
@@ -318,7 +330,7 @@ class Sgp4 {
     const len0 = utf8_encoded_len();
     const ret = this._exports['parse2les'](ptr0, len0);
     
-    let variant5;
+    let variant6;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         const len1 = data_view(memory).getInt32(ret + 12, true);
@@ -330,14 +342,14 @@ class Sgp4 {
         }
         free(base1, len1 * 4, 4);
         
-        variant5 = { tag: "ok", val: result1 };
+        variant6 = { tag: "ok", val: result1 };
         break;
       }
       case 1: {
-        let variant4;
+        let variant5;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant4 = {
+            variant5 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -346,7 +358,7 @@ class Sgp4 {
             break;
           }
           case 1: {
-            variant4 = {
+            variant5 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -356,7 +368,7 @@ class Sgp4 {
             break;
           }
           case 2: {
-            variant4 = {
+            variant5 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -366,19 +378,19 @@ class Sgp4 {
             break;
           }
           case 3: {
-            variant4 = {
+            variant5 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant4 = {
+            variant5 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant4 = {
+            variant5 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -493,7 +505,7 @@ class Sgp4 {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant4 = {
+            variant5 = {
               tag: "tle",
               val: {
                 what: variant2,
@@ -504,18 +516,29 @@ class Sgp4 {
             };
             break;
           }
+          case 7: {
+            const ptr4 = data_view(memory).getInt32(ret + 16, true);
+            const len4 = data_view(memory).getInt32(ret + 20, true);
+            const list4 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr4, len4));
+            free(ptr4, len4, 1);
+            variant5 = {
+              tag: "json-parse",
+              val: list4,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant5 = { tag: "err", val: variant4 };
+        variant6 = { tag: "err", val: variant5 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant5;
+    return variant6;
   }
   parse3les(arg0) {
     const memory = this._exports.memory;
@@ -525,7 +548,7 @@ class Sgp4 {
     const len0 = utf8_encoded_len();
     const ret = this._exports['parse3les'](ptr0, len0);
     
-    let variant5;
+    let variant6;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         const len1 = data_view(memory).getInt32(ret + 12, true);
@@ -537,14 +560,14 @@ class Sgp4 {
         }
         free(base1, len1 * 4, 4);
         
-        variant5 = { tag: "ok", val: result1 };
+        variant6 = { tag: "ok", val: result1 };
         break;
       }
       case 1: {
-        let variant4;
+        let variant5;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant4 = {
+            variant5 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -553,7 +576,7 @@ class Sgp4 {
             break;
           }
           case 1: {
-            variant4 = {
+            variant5 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -563,7 +586,7 @@ class Sgp4 {
             break;
           }
           case 2: {
-            variant4 = {
+            variant5 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -573,19 +596,19 @@ class Sgp4 {
             break;
           }
           case 3: {
-            variant4 = {
+            variant5 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant4 = {
+            variant5 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant4 = {
+            variant5 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -700,7 +723,7 @@ class Sgp4 {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant4 = {
+            variant5 = {
               tag: "tle",
               val: {
                 what: variant2,
@@ -711,18 +734,29 @@ class Sgp4 {
             };
             break;
           }
+          case 7: {
+            const ptr4 = data_view(memory).getInt32(ret + 16, true);
+            const len4 = data_view(memory).getInt32(ret + 20, true);
+            const list4 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr4, len4));
+            free(ptr4, len4, 1);
+            variant5 = {
+              tag: "json-parse",
+              val: list4,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant5 = { tag: "err", val: variant4 };
+        variant6 = { tag: "err", val: variant5 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant5;
+    return variant6;
   }
 }
 
@@ -754,6 +788,7 @@ class Elements {
   static fromTle(sgp4, arg0, arg1, arg2) {
     const memory = sgp4._exports.memory;
     const realloc = sgp4._exports["canonical_abi_realloc"];
+    const free = sgp4._exports["canonical_abi_free"];
     const variant1 = arg0;
     let variant1_0;
     let variant1_1;
@@ -784,18 +819,18 @@ class Elements {
     const len3 = utf8_encoded_len();
     const ret = sgp4._exports['elements::from-tle'](variant1_0, variant1_1, variant1_2, ptr2, len2, ptr3, len3);
     
-    let variant7;
+    let variant8;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         
-        variant7 = { tag: "ok", val: sgp4._resource0_slab.remove(data_view(memory).getInt32(ret + 8, true)) };
+        variant8 = { tag: "ok", val: sgp4._resource0_slab.remove(data_view(memory).getInt32(ret + 8, true)) };
         break;
       }
       case 1: {
-        let variant6;
+        let variant7;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant6 = {
+            variant7 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -804,7 +839,7 @@ class Elements {
             break;
           }
           case 1: {
-            variant6 = {
+            variant7 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -814,7 +849,7 @@ class Elements {
             break;
           }
           case 2: {
-            variant6 = {
+            variant7 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -824,19 +859,19 @@ class Elements {
             break;
           }
           case 3: {
-            variant6 = {
+            variant7 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant6 = {
+            variant7 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant6 = {
+            variant7 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -951,7 +986,7 @@ class Elements {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant6 = {
+            variant7 = {
               tag: "tle",
               val: {
                 what: variant4,
@@ -962,18 +997,239 @@ class Elements {
             };
             break;
           }
+          case 7: {
+            const ptr6 = data_view(memory).getInt32(ret + 16, true);
+            const len6 = data_view(memory).getInt32(ret + 20, true);
+            const list6 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr6, len6));
+            free(ptr6, len6, 1);
+            variant7 = {
+              tag: "json-parse",
+              val: list6,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant7 = { tag: "err", val: variant6 };
+        variant8 = { tag: "err", val: variant7 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant7;
+    return variant8;
+  }
+  static fromJson(sgp4, arg0) {
+    const memory = sgp4._exports.memory;
+    const realloc = sgp4._exports["canonical_abi_realloc"];
+    const free = sgp4._exports["canonical_abi_free"];
+    const ptr0 = utf8_encode(arg0, realloc, memory);
+    const len0 = utf8_encoded_len();
+    const ret = sgp4._exports['elements::from-json'](ptr0, len0);
+    
+    let variant5;
+    switch (data_view(memory).getUint8(ret + 0, true)) {
+      case 0: {
+        
+        variant5 = { tag: "ok", val: sgp4._resource0_slab.remove(data_view(memory).getInt32(ret + 8, true)) };
+        break;
+      }
+      case 1: {
+        let variant4;
+        switch (data_view(memory).getUint8(ret + 8, true)) {
+          case 0: {
+            variant4 = {
+              tag: "out-of-range-epoch-eccentricity",
+              val: {
+                eccentricity: data_view(memory).getFloat64(ret + 16, true),
+              },
+            };
+            break;
+          }
+          case 1: {
+            variant4 = {
+              tag: "out-of-range-eccentricity",
+              val: {
+                eccentricity: data_view(memory).getFloat64(ret + 16, true),
+                t: data_view(memory).getFloat64(ret + 24, true),
+              },
+            };
+            break;
+          }
+          case 2: {
+            variant4 = {
+              tag: "out-of-range-perturbed-eccentricity",
+              val: {
+                eccentricity: data_view(memory).getFloat64(ret + 16, true),
+                t: data_view(memory).getFloat64(ret + 24, true),
+              },
+            };
+            break;
+          }
+          case 3: {
+            variant4 = {
+              tag: "negative-brouwer-mean-motion",
+            };
+            break;
+          }
+          case 4: {
+            variant4 = {
+              tag: "negative-kozai-mean-motion",
+            };
+            break;
+          }
+          case 5: {
+            variant4 = {
+              tag: "negative-semi-latus-rectum",
+              val: {
+                t: data_view(memory).getFloat64(ret + 16, true),
+              },
+            };
+            break;
+          }
+          case 6: {
+            let variant1;
+            switch (data_view(memory).getUint8(ret + 16, true)) {
+              case 0: {
+                variant1 = {
+                  tag: "bad-checksum",
+                };
+                break;
+              }
+              case 1: {
+                variant1 = {
+                  tag: "bad-length",
+                };
+                break;
+              }
+              case 2: {
+                variant1 = {
+                  tag: "bad-first-character",
+                };
+                break;
+              }
+              case 3: {
+                variant1 = {
+                  tag: "expected-float",
+                };
+                break;
+              }
+              case 4: {
+                variant1 = {
+                  tag: "expected-float-with-assumed-decimal-point",
+                };
+                break;
+              }
+              case 5: {
+                variant1 = {
+                  tag: "expected-integer",
+                };
+                break;
+              }
+              case 6: {
+                variant1 = {
+                  tag: "expected-space",
+                };
+                break;
+              }
+              case 7: {
+                variant1 = {
+                  tag: "expected-string",
+                };
+                break;
+              }
+              case 8: {
+                variant1 = {
+                  tag: "float-with-assumed-decimal-point-too-long",
+                };
+                break;
+              }
+              case 9: {
+                variant1 = {
+                  tag: "norad-id-mismatch",
+                };
+                break;
+              }
+              case 10: {
+                variant1 = {
+                  tag: "unknown-classification",
+                };
+                break;
+              }
+              case 11: {
+                variant1 = {
+                  tag: "from-yo-opt-failed",
+                };
+                break;
+              }
+              case 12: {
+                variant1 = {
+                  tag: "from-num-seconds-from-midnight-failed",
+                };
+                break;
+              }
+              default:
+              throw new RangeError("invalid variant discriminant for ErrorTleWhat");
+            }
+            let variant2;
+            switch (data_view(memory).getUint8(ret + 17, true)) {
+              case 0: {
+                variant2 = {
+                  tag: "line1",
+                };
+                break;
+              }
+              case 1: {
+                variant2 = {
+                  tag: "line2",
+                };
+                break;
+              }
+              case 2: {
+                variant2 = {
+                  tag: "both",
+                };
+                break;
+              }
+              default:
+              throw new RangeError("invalid variant discriminant for ErrorTleLine");
+            }
+            variant4 = {
+              tag: "tle",
+              val: {
+                what: variant1,
+                line: variant2,
+                start: data_view(memory).getInt32(ret + 20, true) >>> 0,
+                end: data_view(memory).getInt32(ret + 24, true) >>> 0,
+              },
+            };
+            break;
+          }
+          case 7: {
+            const ptr3 = data_view(memory).getInt32(ret + 16, true);
+            const len3 = data_view(memory).getInt32(ret + 20, true);
+            const list3 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr3, len3));
+            free(ptr3, len3, 1);
+            variant4 = {
+              tag: "json-parse",
+              val: list3,
+            };
+            break;
+          }
+          default:
+          throw new RangeError("invalid variant discriminant for Error");
+        }
+        
+        variant5 = { tag: "err", val: variant4 };
+        break;
+      }
+      default: {
+        throw new RangeError("invalid variant discriminant for expected");
+      }
+    }
+    return variant5;
   }
   epoch() {
     const obj0 = this;
@@ -1199,6 +1455,7 @@ class Constants {
   }
   static new(sgp4, arg0, arg1, arg2, arg3, arg4) {
     const memory = sgp4._exports.memory;
+    const free = sgp4._exports["canonical_abi_free"];
     const {ae: v0_0, ke: v0_1, j2: v0_2, j3: v0_3, j4: v0_4 } = arg0;
     const val1 = to_string(arg1);
     let enum1;
@@ -1218,18 +1475,18 @@ class Constants {
     const {inclination: v2_0, rightAscension: v2_1, eccentricity: v2_2, argumentOfPerigee: v2_3, meanAnomaly: v2_4, meanMotion: v2_5 } = arg4;
     const ret = sgp4._exports['constants::new'](+v0_0, +v0_1, +v0_2, +v0_3, +v0_4, enum1, +arg2, +arg3, +v2_0, +v2_1, +v2_2, +v2_3, +v2_4, +v2_5);
     
-    let variant6;
+    let variant7;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         
-        variant6 = { tag: "ok", val: sgp4._resource2_slab.remove(data_view(memory).getInt32(ret + 8, true)) };
+        variant7 = { tag: "ok", val: sgp4._resource2_slab.remove(data_view(memory).getInt32(ret + 8, true)) };
         break;
       }
       case 1: {
-        let variant5;
+        let variant6;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant5 = {
+            variant6 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1238,7 +1495,7 @@ class Constants {
             break;
           }
           case 1: {
-            variant5 = {
+            variant6 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1248,7 +1505,7 @@ class Constants {
             break;
           }
           case 2: {
-            variant5 = {
+            variant6 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1258,19 +1515,19 @@ class Constants {
             break;
           }
           case 3: {
-            variant5 = {
+            variant6 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant5 = {
+            variant6 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant5 = {
+            variant6 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -1385,7 +1642,7 @@ class Constants {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant5 = {
+            variant6 = {
               tag: "tle",
               val: {
                 what: variant3,
@@ -1396,37 +1653,49 @@ class Constants {
             };
             break;
           }
+          case 7: {
+            const ptr5 = data_view(memory).getInt32(ret + 16, true);
+            const len5 = data_view(memory).getInt32(ret + 20, true);
+            const list5 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr5, len5));
+            free(ptr5, len5, 1);
+            variant6 = {
+              tag: "json-parse",
+              val: list5,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant6 = { tag: "err", val: variant5 };
+        variant7 = { tag: "err", val: variant6 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant6;
+    return variant7;
   }
   static fromElements(sgp4, arg0) {
     const memory = sgp4._exports.memory;
+    const free = sgp4._exports["canonical_abi_free"];
     const obj0 = arg0;
     if (!(obj0 instanceof Elements)) throw new TypeError('expected instance of Elements');
     const ret = sgp4._exports['constants::from-elements'](sgp4._resource0_slab.insert(obj0.clone()));
     
-    let variant4;
+    let variant5;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         
-        variant4 = { tag: "ok", val: sgp4._resource2_slab.remove(data_view(memory).getInt32(ret + 8, true)) };
+        variant5 = { tag: "ok", val: sgp4._resource2_slab.remove(data_view(memory).getInt32(ret + 8, true)) };
         break;
       }
       case 1: {
-        let variant3;
+        let variant4;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1435,7 +1704,7 @@ class Constants {
             break;
           }
           case 1: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1445,7 +1714,7 @@ class Constants {
             break;
           }
           case 2: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1455,19 +1724,19 @@ class Constants {
             break;
           }
           case 3: {
-            variant3 = {
+            variant4 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant3 = {
+            variant4 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant3 = {
+            variant4 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -1582,7 +1851,7 @@ class Constants {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant3 = {
+            variant4 = {
               tag: "tle",
               val: {
                 what: variant1,
@@ -1593,37 +1862,49 @@ class Constants {
             };
             break;
           }
+          case 7: {
+            const ptr3 = data_view(memory).getInt32(ret + 16, true);
+            const len3 = data_view(memory).getInt32(ret + 20, true);
+            const list3 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr3, len3));
+            free(ptr3, len3, 1);
+            variant4 = {
+              tag: "json-parse",
+              val: list3,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant4 = { tag: "err", val: variant3 };
+        variant5 = { tag: "err", val: variant4 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant4;
+    return variant5;
   }
   static fromElementsAfspcCompatibilityMode(sgp4, arg0) {
     const memory = sgp4._exports.memory;
+    const free = sgp4._exports["canonical_abi_free"];
     const obj0 = arg0;
     if (!(obj0 instanceof Elements)) throw new TypeError('expected instance of Elements');
     const ret = sgp4._exports['constants::from-elements-afspc-compatibility-mode'](sgp4._resource0_slab.insert(obj0.clone()));
     
-    let variant4;
+    let variant5;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         
-        variant4 = { tag: "ok", val: sgp4._resource2_slab.remove(data_view(memory).getInt32(ret + 8, true)) };
+        variant5 = { tag: "ok", val: sgp4._resource2_slab.remove(data_view(memory).getInt32(ret + 8, true)) };
         break;
       }
       case 1: {
-        let variant3;
+        let variant4;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1632,7 +1913,7 @@ class Constants {
             break;
           }
           case 1: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1642,7 +1923,7 @@ class Constants {
             break;
           }
           case 2: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1652,19 +1933,19 @@ class Constants {
             break;
           }
           case 3: {
-            variant3 = {
+            variant4 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant3 = {
+            variant4 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant3 = {
+            variant4 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -1779,7 +2060,7 @@ class Constants {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant3 = {
+            variant4 = {
               tag: "tle",
               val: {
                 what: variant1,
@@ -1790,18 +2071,29 @@ class Constants {
             };
             break;
           }
+          case 7: {
+            const ptr3 = data_view(memory).getInt32(ret + 16, true);
+            const len3 = data_view(memory).getInt32(ret + 20, true);
+            const list3 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr3, len3));
+            free(ptr3, len3, 1);
+            variant4 = {
+              tag: "json-parse",
+              val: list3,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant4 = { tag: "err", val: variant3 };
+        variant5 = { tag: "err", val: variant4 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant4;
+    return variant5;
   }
   initialState() {
     const memory = this._obj._exports.memory;
@@ -1828,6 +2120,7 @@ class Constants {
   }
   propagateFromState(arg1, arg2, arg3) {
     const memory = this._obj._exports.memory;
+    const free = this._obj._exports["canonical_abi_free"];
     const obj0 = this;
     const variant2 = arg2;
     let variant2_0;
@@ -1852,21 +2145,21 @@ class Constants {
     }
     const ret = this._obj._exports['constants::propagate-from-state'](this._obj._resource2_slab.insert(obj0.clone()), +arg1, variant2_0, variant2_1, arg3 ? 1 : 0);
     
-    let variant6;
+    let variant7;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         
-        variant6 = { tag: "ok", val: {
+        variant7 = { tag: "ok", val: {
           position: [data_view(memory).getFloat64(ret + 8, true), data_view(memory).getFloat64(ret + 16, true), data_view(memory).getFloat64(ret + 24, true)],
           velocity: [data_view(memory).getFloat64(ret + 32, true), data_view(memory).getFloat64(ret + 40, true), data_view(memory).getFloat64(ret + 48, true)],
         } };
         break;
       }
       case 1: {
-        let variant5;
+        let variant6;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant5 = {
+            variant6 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1875,7 +2168,7 @@ class Constants {
             break;
           }
           case 1: {
-            variant5 = {
+            variant6 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1885,7 +2178,7 @@ class Constants {
             break;
           }
           case 2: {
-            variant5 = {
+            variant6 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -1895,19 +2188,19 @@ class Constants {
             break;
           }
           case 3: {
-            variant5 = {
+            variant6 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant5 = {
+            variant6 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant5 = {
+            variant6 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -2022,7 +2315,7 @@ class Constants {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant5 = {
+            variant6 = {
               tag: "tle",
               val: {
                 what: variant3,
@@ -2033,39 +2326,51 @@ class Constants {
             };
             break;
           }
+          case 7: {
+            const ptr5 = data_view(memory).getInt32(ret + 16, true);
+            const len5 = data_view(memory).getInt32(ret + 20, true);
+            const list5 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr5, len5));
+            free(ptr5, len5, 1);
+            variant6 = {
+              tag: "json-parse",
+              val: list5,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant6 = { tag: "err", val: variant5 };
+        variant7 = { tag: "err", val: variant6 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant6;
+    return variant7;
   }
   propagate(arg1) {
     const memory = this._obj._exports.memory;
+    const free = this._obj._exports["canonical_abi_free"];
     const obj0 = this;
     const ret = this._obj._exports['constants::propagate'](this._obj._resource2_slab.insert(obj0.clone()), +arg1);
     
-    let variant4;
+    let variant5;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         
-        variant4 = { tag: "ok", val: {
+        variant5 = { tag: "ok", val: {
           position: [data_view(memory).getFloat64(ret + 8, true), data_view(memory).getFloat64(ret + 16, true), data_view(memory).getFloat64(ret + 24, true)],
           velocity: [data_view(memory).getFloat64(ret + 32, true), data_view(memory).getFloat64(ret + 40, true), data_view(memory).getFloat64(ret + 48, true)],
         } };
         break;
       }
       case 1: {
-        let variant3;
+        let variant4;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -2074,7 +2379,7 @@ class Constants {
             break;
           }
           case 1: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -2084,7 +2389,7 @@ class Constants {
             break;
           }
           case 2: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -2094,19 +2399,19 @@ class Constants {
             break;
           }
           case 3: {
-            variant3 = {
+            variant4 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant3 = {
+            variant4 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant3 = {
+            variant4 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -2221,7 +2526,7 @@ class Constants {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant3 = {
+            variant4 = {
               tag: "tle",
               val: {
                 what: variant1,
@@ -2232,39 +2537,51 @@ class Constants {
             };
             break;
           }
+          case 7: {
+            const ptr3 = data_view(memory).getInt32(ret + 16, true);
+            const len3 = data_view(memory).getInt32(ret + 20, true);
+            const list3 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr3, len3));
+            free(ptr3, len3, 1);
+            variant4 = {
+              tag: "json-parse",
+              val: list3,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant4 = { tag: "err", val: variant3 };
+        variant5 = { tag: "err", val: variant4 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant4;
+    return variant5;
   }
   propagateAfspcCompatibilityMode(arg1) {
     const memory = this._obj._exports.memory;
+    const free = this._obj._exports["canonical_abi_free"];
     const obj0 = this;
     const ret = this._obj._exports['constants::propagate-afspc-compatibility-mode'](this._obj._resource2_slab.insert(obj0.clone()), +arg1);
     
-    let variant4;
+    let variant5;
     switch (data_view(memory).getUint8(ret + 0, true)) {
       case 0: {
         
-        variant4 = { tag: "ok", val: {
+        variant5 = { tag: "ok", val: {
           position: [data_view(memory).getFloat64(ret + 8, true), data_view(memory).getFloat64(ret + 16, true), data_view(memory).getFloat64(ret + 24, true)],
           velocity: [data_view(memory).getFloat64(ret + 32, true), data_view(memory).getFloat64(ret + 40, true), data_view(memory).getFloat64(ret + 48, true)],
         } };
         break;
       }
       case 1: {
-        let variant3;
+        let variant4;
         switch (data_view(memory).getUint8(ret + 8, true)) {
           case 0: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-epoch-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -2273,7 +2590,7 @@ class Constants {
             break;
           }
           case 1: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -2283,7 +2600,7 @@ class Constants {
             break;
           }
           case 2: {
-            variant3 = {
+            variant4 = {
               tag: "out-of-range-perturbed-eccentricity",
               val: {
                 eccentricity: data_view(memory).getFloat64(ret + 16, true),
@@ -2293,19 +2610,19 @@ class Constants {
             break;
           }
           case 3: {
-            variant3 = {
+            variant4 = {
               tag: "negative-brouwer-mean-motion",
             };
             break;
           }
           case 4: {
-            variant3 = {
+            variant4 = {
               tag: "negative-kozai-mean-motion",
             };
             break;
           }
           case 5: {
-            variant3 = {
+            variant4 = {
               tag: "negative-semi-latus-rectum",
               val: {
                 t: data_view(memory).getFloat64(ret + 16, true),
@@ -2420,7 +2737,7 @@ class Constants {
               default:
               throw new RangeError("invalid variant discriminant for ErrorTleLine");
             }
-            variant3 = {
+            variant4 = {
               tag: "tle",
               val: {
                 what: variant1,
@@ -2431,18 +2748,29 @@ class Constants {
             };
             break;
           }
+          case 7: {
+            const ptr3 = data_view(memory).getInt32(ret + 16, true);
+            const len3 = data_view(memory).getInt32(ret + 20, true);
+            const list3 = UTF8_DECODER.decode(new Uint8Array(memory.buffer, ptr3, len3));
+            free(ptr3, len3, 1);
+            variant4 = {
+              tag: "json-parse",
+              val: list3,
+            };
+            break;
+          }
           default:
           throw new RangeError("invalid variant discriminant for Error");
         }
         
-        variant4 = { tag: "err", val: variant3 };
+        variant5 = { tag: "err", val: variant4 };
         break;
       }
       default: {
         throw new RangeError("invalid variant discriminant for expected");
       }
     }
-    return variant4;
+    return variant5;
   }
 }
 
