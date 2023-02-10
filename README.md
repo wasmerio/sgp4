@@ -4,8 +4,8 @@
     <a title="Hosted on WAPM" href="https://wapm.io/dynamite-bud/sgp4">
     <img src="https://img.shields.io/badge/WAPM-654ef1.svg?style=flat-square&logo=WebAssembly&labelColor=654ef1&logoColor=fff">
     </a>
-    <a title="GitHub license button" href="https://github.com/wasmerio/sgp4/blob/main/LICENSE_MIT.md"><img src="https://img.shields.io/github/license/reklatsmasters/vscode-wasm.svg?style=flat-square"></a>
-    <a title="GitHub Apache license button" href="https://github.com/wasmerio/sgp4/blob/main/LICENSE_APACHE.md"><img src="https://img.shields.io/badge/License-Apache-blue.svg?style=flat-square"></a>
+    <a title="GitHub License button" href="https://github.com/wasmerio/sgp4/blob/main/LICENSE_APACHE.md"><img src="https://img.shields.io/github/license/wasmerio/sgp4.svg?style=flat-square"></a>
+    <a title="GitHub MIT license button" href="https://github.com/wasmerio/sgp4/blob/main/LICENSE_MIT.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square"></a>
   </p>
 </p>
 
@@ -15,28 +15,22 @@ This repository is the port of the [SGP4](https://crates.io/crates/sgp4) library
 
 Published package is available on [WAPM](https://wapm.io/dynamite-bud/sgp4).
 
-Package is published on the following platforms:
-
-- [x] `WAPM`
-- [x] `npm`
-- [x] `pip`
-
 ## Installation
 
-- `WAPM`
+- **`WAPM`**
   ```console
   $ wapm install dynamite-bud/sgp4
   ```
-- `npm`
+- **`npm`**
   ```console
   $ wapm install dynamite-bud/sgp4 --npm
   ```
-- `pip`
+- **`pip`**
   ```console
   $ wapm install dynamite-bud/sgp4 --pip
   ```
 
-## Usage
+## Usage with JavaScript
 
 ```js
 const { bindings } = require("@dynamite-bud/sgp4");
