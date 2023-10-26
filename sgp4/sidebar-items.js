@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Classification","EpochToSiderealTimeAlgorithm","ErrorTleLine","ErrorTleWhat","SgpError"],"struct":["Constants","Elements","Geopotential","NegativeSemiLatusRectum","Orbit","OutOfRangeEccentricity","OutOfRangeEpochEccentricity","OutOfRangePerturbedEccentricity","Prediction","ResonanceState","Sgp4","Tle","UnixTimestamp"]};
